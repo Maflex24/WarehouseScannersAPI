@@ -69,7 +69,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Login")
+                    b.Property<string>("GenerateJwtToken")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
