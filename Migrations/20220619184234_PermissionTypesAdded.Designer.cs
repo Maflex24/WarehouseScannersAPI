@@ -12,8 +12,8 @@ using WarehouseManagerAPI.Entities;
 namespace WarehouseManagerAPI.Migrations
 {
     [DbContext(typeof(WarehouseManagerDbContext))]
-    [Migration("20220619161257_PasswordColumnToEasyTesting")]
-    partial class PasswordColumnToEasyTesting
+    [Migration("20220619184234_PermissionTypesAdded")]
+    partial class PermissionTypesAdded
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,21 @@ namespace WarehouseManagerAPI.Migrations
                     b.HasIndex("PermissionsId");
 
                     b.ToTable("EmployeePermission");
+                });
+
+            modelBuilder.Entity("EmployeeRole", b =>
+                {
+                    b.Property<Guid>("EmployeesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("EmployeesId", "RolesId");
+
+                    b.HasIndex("RolesId");
+
+                    b.ToTable("EmployeeRole");
                 });
 
             modelBuilder.Entity("PermissionRole", b =>
@@ -97,9 +112,67 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("PermissionTypeId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("PermissionTypeId");
+
                     b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("WarehouseManagerAPI.Entities.PermissionType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PermissionsTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Accounts"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Orders"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Picking"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Quality"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Inbound"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Outbound"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Employees"
+                        });
                 });
 
             modelBuilder.Entity("WarehouseManagerAPI.Entities.Role", b =>
@@ -210,6 +283,21 @@ namespace WarehouseManagerAPI.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("EmployeeRole", b =>
+                {
+                    b.HasOne("WarehouseManagerAPI.Entities.Employee", null)
+                        .WithMany()
+                        .HasForeignKey("EmployeesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WarehouseManagerAPI.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PermissionRole", b =>
                 {
                     b.HasOne("WarehouseManagerAPI.Entities.Permission", null)
@@ -223,6 +311,22 @@ namespace WarehouseManagerAPI.Migrations
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("WarehouseManagerAPI.Entities.Permission", b =>
+                {
+                    b.HasOne("WarehouseManagerAPI.Entities.PermissionType", "PermissionType")
+                        .WithMany("Permissions")
+                        .HasForeignKey("PermissionTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PermissionType");
+                });
+
+            modelBuilder.Entity("WarehouseManagerAPI.Entities.PermissionType", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }
