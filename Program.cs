@@ -2,11 +2,11 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Services.Services;
 using WarehouseManagerAPI;
 using WarehouseManagerAPI.Authentication;
 using WarehouseManagerAPI.Entities;
 using WarehouseManagerAPI.Middleware;
+using WarehouseManagerAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<DataGenerator>();
 
@@ -40,6 +40,7 @@ using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
 await dataGenerator.GeneratePermissionsTypes();
 await dataGenerator.GeneratePermissions();
+await dataGenerator.GenerateRoles();
 await dataGenerator.GenerateSystemAdmin();
 
 

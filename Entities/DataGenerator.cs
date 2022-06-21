@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Services.Services;
 using WarehouseManagerAPI.Dtos;
+using WarehouseManagerAPI.Services;
 
 namespace WarehouseManagerAPI.Entities
 {
     public class DataGenerator
     {
         private readonly WarehouseManagerDbContext _dbContext;
-        private readonly IEmployeeService _employeeService;
+        private readonly IAccountService _accountService;
 
-        public DataGenerator(WarehouseManagerDbContext dbContext, IEmployeeService employeeService)
+        public DataGenerator(WarehouseManagerDbContext dbContext, IAccountService accountService)
         {
             _dbContext = dbContext;
-            _employeeService = employeeService;
+            _accountService = accountService;
         }
 
         public async Task GenerateSystemAdmin()
@@ -36,7 +36,7 @@ namespace WarehouseManagerAPI.Entities
                 LastName = "Admin"
             };
 
-            await _employeeService.AddEmployee(systemAdmin);
+            await _accountService.AddEmployee(systemAdmin);
         }
 
 
@@ -76,17 +76,23 @@ namespace WarehouseManagerAPI.Entities
 
             var accountsType = permissionTypes.First(pt => pt.Name == "Accounts");
             var permissionType = permissionTypes.First(pt => pt.Name == "Permissions");
+            var pickingType = permissionTypes.First(pt => pt.Name == "Picking");
+            var qualityType = permissionTypes.First(pt => pt.Name == "Quality");
 
             var permissions = new List<Permission>()
             {
                 new Permission(){Name = "AccountCreate", PermissionType = accountsType},
                 new Permission(){Name = "AccountActivation", PermissionType = accountsType},
-                new Permission(){Name = "AccountDisable", PermissionType = accountsType},
+                new Permission(){Name = "AccountDeactivation", PermissionType = accountsType},
                 new Permission(){Name = "AccountRoleAssign", PermissionType = accountsType},
                 new Permission(){Name = "PermissionCreate", PermissionType = permissionType},
                 new Permission(){Name = "PermissionModify", PermissionType = permissionType},
                 new Permission(){Name = "PermissionDelete", PermissionType = permissionType},
-                new Permission(){Name = "PermissionAssign", PermissionType = permissionType}
+                new Permission(){Name = "PermissionAssign", PermissionType = permissionType},
+                new Permission(){Name = "PickingPick", PermissionType = pickingType},
+                new Permission(){Name = "PickingEdit", PermissionType = pickingType},
+                new Permission(){Name = "QualityCheck", PermissionType = qualityType},
+                new Permission(){Name = "QualityEdit", PermissionType = qualityType},
             };
 
             var existedPermissionsCount = _dbContext.PermissionsTypes.Count();
@@ -97,6 +103,64 @@ namespace WarehouseManagerAPI.Entities
             foreach (var newPermission in permissions.Where(newPermissionsType => !existedPermissions.Contains(newPermissionsType.Name)))
             {
                 _dbContext.Permissions.Add(newPermission);
+            }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task GenerateRoles()
+        {
+            var permissions = await _dbContext.Permissions.ToListAsync();
+
+            var roles = new List<Role>()
+            {
+                new Role {
+                    Name = "Picker Trainee", 
+                    Permissions = new List<Permission>()
+                    {
+                         permissions.Single(p => p.Name == "PickingPick")
+                    }},
+                new Role {
+                    Name = "Picker",
+                    Permissions = new List<Permission>()
+                    {
+                        permissions.Single(p => p.Name == "PickingPick"),
+                        permissions.Single(p => p.Name == "PickingEdit"),
+                    }},
+                new Role {
+                    Name = "Quality Trainee",
+                    Permissions = new List<Permission>()
+                    {
+                        permissions.Single(p => p.Name == "QualityCheck"),
+                    }},
+                new Role {
+                    Name = "Quality",
+                    Permissions = new List<Permission>()
+                    {
+                        permissions.Single(p => p.Name == "QualityCheck"),
+                        permissions.Single(p => p.Name == "QualityEdit"),
+                    }},
+                //new Role {Name = "Inbound Trainee"},
+                //new Role {Name = "Inbound"},
+                //new Role {Name = "Outbound Trainee"},
+                //new Role {Name = "Outbound"},
+                //new Role {Name = "OPS Admin Assisant"},
+                //new Role {Name = "OPS Admin"},
+                //new Role {Name = "Process Helper"},
+                //new Role {Name = "Leader Assistant"},
+                //new Role {Name = "Leader"},
+                new Role {Name = "Supervisor Assistant"},
+                new Role {Name = "Supervisor"},
+            };
+
+            var existedRolesCount = _dbContext.Roles.Count();
+            if (existedRolesCount == roles.Count)
+                return;
+
+            var existedRoles = await _dbContext.Roles.Select(p => p.Name).ToListAsync();
+            foreach (var newRole in roles.Where(newPermissionsType => !existedRoles.Contains(newPermissionsType.Name)))
+            {
+                await _dbContext.Roles.AddAsync(newRole);
             }
 
             await _dbContext.SaveChangesAsync();
