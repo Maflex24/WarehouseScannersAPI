@@ -1,34 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using WarehouseManagerAPI;
 using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
 using WarehouseManagerAPI.Exceptions;
 
-namespace Services.Services
+namespace WarehouseManagerAPI.Services
 {
-    public interface IEmployeeService
+    public interface IAccountService
     {
         public Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto);
         public Task<string> GenerateJwtToken(EmployeeLoginDto loginDto);
     }
 
 
-    public class EmployeeService : IEmployeeService
+    public class AccountService : IAccountService
     {
         private readonly WarehouseManagerDbContext _dbContext;
         private readonly IPasswordHasher<Employee> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
 
-        public EmployeeService(WarehouseManagerDbContext dbContext, IPasswordHasher<Employee> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(WarehouseManagerDbContext dbContext, IPasswordHasher<Employee> passwordHasher, AuthenticationSettings authenticationSettings)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
@@ -77,8 +72,12 @@ namespace Services.Services
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
                 new Claim(ClaimTypes.GivenName, employee.Login),
                 new Claim(ClaimTypes.Name, $"{employee.FirstName} {employee.LastName}"),
-                new Claim("Roles", string.Join("-", roles)) 
             };
+
+            foreach (var permission in permissions)
+            {
+                claims.Add(new Claim(permission, true.ToString()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

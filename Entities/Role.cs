@@ -22,24 +22,6 @@ namespace WarehouseManagerAPI.Entities
         {
             builder.HasMany(r => r.Permissions)
                 .WithMany(p => p.Roles);
-
-            builder.HasData(
-                new Role {Id = 1, Name = "Picker Trainee"},
-                new Role {Id = 2, Name = "Picker" },
-                new Role {Id = 3, Name = "Quality Trainee" },
-                new Role {Id = 4, Name = "Quality" },
-                new Role {Id = 5, Name = "Inbound Trainee" },
-                new Role {Id = 6, Name = "Inbound" },
-                new Role {Id = 7, Name = "Outbound Trainee" },
-                new Role {Id = 8, Name = "Outbound" },
-                new Role {Id = 9, Name = "OPS Admin Assisant" },
-                new Role {Id = 10, Name = "OPS Admin" },
-                new Role {Id = 11, Name = "Process Helper" },
-                new Role {Id = 12, Name = "Leader Assistant" },
-                new Role {Id = 13, Name = "Leader" },
-                new Role {Id = 14, Name = "Supervisor Assistant" },
-                new Role {Id = 15, Name = "Supervisor" }
-            );
         }
     }
 }
