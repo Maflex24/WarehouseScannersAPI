@@ -12,8 +12,6 @@ namespace WarehouseManagerAPI.Entities
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int PermissionTypeId { get; set; }
-        public PermissionType PermissionType { get; set; }
         public List<Employee> Employees { get; set; }
         public List<Role> Roles { get; set; }
     }
@@ -22,9 +20,7 @@ namespace WarehouseManagerAPI.Entities
     {
         public void Configure(EntityTypeBuilder<Permission> builder)
         {
-            builder.HasOne(p => p.PermissionType)
-                .WithMany(pt => pt.Permissions)
-                .HasForeignKey(p => p.PermissionTypeId);
+           
         }
     }
 }

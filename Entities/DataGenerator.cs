@@ -39,63 +39,25 @@ namespace WarehouseManagerAPI.Entities
             await _accountService.AddEmployee(systemAdmin);
         }
 
-
-        public async Task GeneratePermissionsTypes()
-        {
-
-            var newPermissionsTypes = new List<PermissionType>()
-            {
-                new PermissionType {Name = "Accounts"},
-                new PermissionType {Name = "Permissions"},
-                new PermissionType {Name = "Employees"},
-                new PermissionType {Name = "Orders"},
-                new PermissionType {Name = "Picking"},
-                new PermissionType {Name = "Quality"},
-                new PermissionType {Name = "Inbound"},
-                new PermissionType {Name = "Outbound"},
-                new PermissionType {Name = "Storage"},
-                new PermissionType {Name = "Products"},
-            };
-
-            var dbPermissionTypesCount = _dbContext.PermissionsTypes.Count();
-            if (dbPermissionTypesCount == newPermissionsTypes.Count)
-                return;
-
-            var permissionTypes = await _dbContext.PermissionsTypes.Select(pt => pt.Name).ToListAsync();
-            foreach (var newPermissionsType in newPermissionsTypes.Where(newPermissionsType => !permissionTypes.Contains(newPermissionsType.Name)))
-            {
-                _dbContext.PermissionsTypes.Add(newPermissionsType);
-            }
-
-            await _dbContext.SaveChangesAsync();
-        }
-
         public async Task GeneratePermissions()
         {
-            var permissionTypes = await _dbContext.PermissionsTypes.ToListAsync();
-
-            var accountsType = permissionTypes.First(pt => pt.Name == "Accounts");
-            var permissionType = permissionTypes.First(pt => pt.Name == "Permissions");
-            var pickingType = permissionTypes.First(pt => pt.Name == "Picking");
-            var qualityType = permissionTypes.First(pt => pt.Name == "Quality");
-
             var permissions = new List<Permission>()
             {
-                new Permission(){Name = "AccountCreate", PermissionType = accountsType},
-                new Permission(){Name = "AccountActivation", PermissionType = accountsType},
-                new Permission(){Name = "AccountDeactivation", PermissionType = accountsType},
-                new Permission(){Name = "AccountRoleAssign", PermissionType = accountsType},
-                new Permission(){Name = "PermissionCreate", PermissionType = permissionType},
-                new Permission(){Name = "PermissionModify", PermissionType = permissionType},
-                new Permission(){Name = "PermissionDelete", PermissionType = permissionType},
-                new Permission(){Name = "PermissionAssign", PermissionType = permissionType},
-                new Permission(){Name = "PickingPick", PermissionType = pickingType},
-                new Permission(){Name = "PickingEdit", PermissionType = pickingType},
-                new Permission(){Name = "QualityCheck", PermissionType = qualityType},
-                new Permission(){Name = "QualityEdit", PermissionType = qualityType},
+                new Permission(){Name = "AccountCreate"},
+                new Permission(){Name = "AccountActivation"},
+                new Permission(){Name = "AccountDeactivation"},
+                new Permission(){Name = "AccountRoleAssign"},
+                new Permission(){Name = "PermissionCreate"},
+                new Permission(){Name = "PermissionModify"},
+                new Permission(){Name = "PermissionDelete"},
+                new Permission(){Name = "PermissionAssign"},
+                new Permission(){Name = "PickingPick"},
+                new Permission(){Name = "PickingEdit"},
+                new Permission(){Name = "QualityCheck"},
+                new Permission(){Name = "QualityEdit"}
             };
 
-            var existedPermissionsCount = _dbContext.PermissionsTypes.Count();
+            var existedPermissionsCount = _dbContext.Permissions.Count();
             if (existedPermissionsCount == permissions.Count)
                 return;
 
@@ -140,6 +102,15 @@ namespace WarehouseManagerAPI.Entities
                         permissions.Single(p => p.Name == "QualityCheck"),
                         permissions.Single(p => p.Name == "QualityEdit"),
                     }},
+                new Role {
+                    Name = "Account Admin",
+                    Permissions = new List<Permission>()
+                    {
+                        permissions.Single(p => p.Name == "AccountCreate"),
+                        permissions.Single(p => p.Name == "AccountActivation"),
+                        permissions.Single(p => p.Name == "AccountDeactivation"),
+                        permissions.Single(p => p.Name == "AccountRoleAssign"),
+                    }},
                 //new Role {Name = "Inbound Trainee"},
                 //new Role {Name = "Inbound"},
                 //new Role {Name = "Outbound Trainee"},
@@ -149,8 +120,6 @@ namespace WarehouseManagerAPI.Entities
                 //new Role {Name = "Process Helper"},
                 //new Role {Name = "Leader Assistant"},
                 //new Role {Name = "Leader"},
-                new Role {Name = "Supervisor Assistant"},
-                new Role {Name = "Supervisor"},
             };
 
             var existedRolesCount = _dbContext.Roles.Count();
