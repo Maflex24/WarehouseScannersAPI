@@ -18,6 +18,9 @@ builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>(
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<DataGenerator>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IEmployeeContextService, EmployeeContextService>();
+
 
 builder.Services.AddDbContext<WarehouseManagerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WarehouseDbConnectionString")));
 

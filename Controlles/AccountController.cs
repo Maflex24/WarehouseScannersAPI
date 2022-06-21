@@ -43,6 +43,12 @@ namespace WarehouseManagerAPI.Controlles
             return Ok(token);
         }
 
-        
+        [HttpPost("password")]
+        public async Task<ActionResult> ChangePassword([FromBody] EmployeeChangePasswordDto changePasswordDto)
+        {
+            await _accountService.ChangePassword(changePasswordDto);
+
+            return Ok();
+        }
     }
 }
