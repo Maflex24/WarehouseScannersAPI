@@ -14,6 +14,7 @@ namespace WarehouseManagerAPI.Services
     {
         public Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto);
         public Task<string> GenerateJwtToken(EmployeeLoginDto loginDto);
+        public Task ChangePassword(EmployeeChangePasswordDto changePasswordDto);
     }
 
 
@@ -22,12 +23,14 @@ namespace WarehouseManagerAPI.Services
         private readonly WarehouseManagerDbContext _dbContext;
         private readonly IPasswordHasher<Employee> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
+        private readonly IEmployeeContextService _employeeContextService;
 
-        public AccountService(WarehouseManagerDbContext dbContext, IPasswordHasher<Employee> passwordHasher, AuthenticationSettings authenticationSettings)
+        public AccountService(WarehouseManagerDbContext dbContext, IPasswordHasher<Employee> passwordHasher, AuthenticationSettings authenticationSettings, IEmployeeContextService employeeContextService)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
+            _employeeContextService = employeeContextService;
         }
 
         public async Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto)
@@ -90,6 +93,24 @@ namespace WarehouseManagerAPI.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task ChangePassword(EmployeeChangePasswordDto changePasswordDto)
+        {
+            var user = _dbContext.Employees
+                .FirstOrDefault(e => e.Id == _employeeContextService.EmployeeId);
+
+            var oldPasswordVerify = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, changePasswordDto.OldPassword);
+            if (oldPasswordVerify == PasswordVerificationResult.Failed)
+                throw new InvalidPasswordException("Not valid password");
+
+            if (changePasswordDto.NewPassword != changePasswordDto.ConfirmNewPassword)
+                throw new InvalidPasswordException("New password, and confirmed must be the same");
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, changePasswordDto.NewPassword);
+            user.Password = changePasswordDto.NewPassword;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

@@ -20,6 +20,11 @@ namespace WarehouseManagerAPI.Middleware
                 context.Response.StatusCode = 400;
                 await context.Response.WriteAsync(badRequest.Message);
             }
+            catch (InvalidPasswordException invalidPassword)
+            {
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsync(invalidPassword.Message);
+            }
             catch (Exception e)
             {
                 Console.WriteLine(e);
