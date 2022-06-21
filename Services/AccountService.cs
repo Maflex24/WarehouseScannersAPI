@@ -15,6 +15,7 @@ namespace WarehouseManagerAPI.Services
         public Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto);
         public Task<string> GenerateJwtToken(EmployeeLoginDto loginDto);
         public Task ChangePassword(EmployeeChangePasswordDto changePasswordDto);
+
     }
 
 
@@ -31,6 +32,7 @@ namespace WarehouseManagerAPI.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _employeeContextService = employeeContextService;
+
         }
 
         public async Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto)
