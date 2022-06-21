@@ -20,15 +20,7 @@ namespace WarehouseManagerAPI.Entities
     {
         public void Configure(EntityTypeBuilder<PermissionType> builder)
         {
-            builder.HasData(
-                new PermissionType {Id = 1, Name = "Accounts"},
-                new PermissionType {Id = 2, Name = "Orders"},
-                new PermissionType {Id = 3, Name = "Picking"},
-                new PermissionType {Id = 4, Name = "Quality"},
-                new PermissionType {Id = 5, Name = "Inbound"},
-                new PermissionType {Id = 6, Name = "Outbound"},
-                new PermissionType {Id = 7, Name = "Employees"}
-            );
+            
         }
     }
 }

@@ -12,6 +12,7 @@ using WarehouseManagerAPI.Entities;
 namespace WarehouseManagerAPI.Controlles
 {
     [Route("api/employees")]
+    [Authorize]
     [ApiController]
     public class EmployeeController : ControllerBase
     {
@@ -33,6 +34,7 @@ namespace WarehouseManagerAPI.Controlles
             return Created($"api/employee/{newEmployee.Id}", newEmployee);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] EmployeeLoginDto loginDto)
         {
