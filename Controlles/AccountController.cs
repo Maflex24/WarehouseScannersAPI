@@ -23,16 +23,6 @@ namespace WarehouseManagerAPI.Controlles
             _accountService = accountService;
         }
 
-        [HttpPost("register")]
-        public async Task<ActionResult<Employee>> NewEmployee([FromBody] EmployeeRegisterPost employee)
-        {
-            var newEmployee =  await _accountService.AddEmployee(employee);
-
-            if (newEmployee == null)
-                return BadRequest();
-
-            return Created($"api/employee/{newEmployee.Id}", newEmployee);
-        }
 
         [AllowAnonymous]
         [HttpPost("login")]

@@ -19,7 +19,6 @@ namespace WarehouseManagerAPI.Entities
         public DateTime RegisteredDate { get; set; }
         public bool IsActive { get; set; }
         public List<Permission> Permissions { get; set; }
-        public List<Role> Roles { get; set; }
     }
 
     public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
@@ -28,9 +27,6 @@ namespace WarehouseManagerAPI.Entities
         {
             builder.HasMany(e => e.Permissions)
                 .WithMany(p => p.Employees);
-
-            builder.HasMany(e => e.Roles)
-                .WithMany(r => r.Employees);
         }
     }
 }

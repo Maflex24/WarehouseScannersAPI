@@ -42,9 +42,6 @@ if (app.Environment.IsDevelopment())
 using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
 await dataGenerator.GeneratePermissions();
-await dataGenerator.GenerateRoles();
-await dataGenerator.GenerateSystemAdmin();
-
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

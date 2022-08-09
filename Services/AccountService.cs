@@ -12,10 +12,8 @@ namespace WarehouseManagerAPI.Services
 {
     public interface IAccountService
     {
-        public Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto);
         public Task<string> GenerateJwtToken(EmployeeLoginDto loginDto);
         public Task ChangePassword(EmployeeChangePasswordDto changePasswordDto);
-
     }
 
 
@@ -35,30 +33,10 @@ namespace WarehouseManagerAPI.Services
 
         }
 
-        public async Task<Employee> AddEmployee(EmployeeRegisterPost employeeDto)
-        {
-            var employee = new Employee()
-            {
-                Login = employeeDto.Login,
-                FirstName = employeeDto.FirstName,
-                LastName = employeeDto.LastName,
-                Password = employeeDto.Password, // todo change later
-                RegisteredDate = DateTime.Now,
-                IsActive = true
-            };
-
-            employee.PasswordHash = _passwordHasher.HashPassword(employee, employeeDto.Password);
-            await _dbContext.Employees.AddAsync(employee);
-            await _dbContext.SaveChangesAsync();
-
-            return employee;
-        }
-
         public async Task<string> GenerateJwtToken(EmployeeLoginDto loginDto)
         {
             var employee = await _dbContext.Employees
                 .AsNoTracking()
-                .Include(e => e.Roles)
                 .Include(e => e.Permissions)
                 .FirstOrDefaultAsync(e => e.Login == loginDto.Login);
 
@@ -69,7 +47,6 @@ namespace WarehouseManagerAPI.Services
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Login or password is not valid");
 
-            var roles = employee.Roles.Select(role => role.Id.ToString()).ToList();
             var permissions = employee.Permissions.Select(p => p.Id.ToString()).ToList();
 
             var claims = new List<Claim>

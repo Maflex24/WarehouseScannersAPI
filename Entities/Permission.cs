@@ -13,7 +13,6 @@ namespace WarehouseManagerAPI.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public List<Employee> Employees { get; set; }
-        public List<Role> Roles { get; set; }
     }
 
     public class PermissionConfiguration : IEntityTypeConfiguration<Permission>
