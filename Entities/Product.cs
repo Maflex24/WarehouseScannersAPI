@@ -17,6 +17,7 @@ namespace WarehouseManagerAPI.Entities
         public int Height { get; set; }
         public int Depth { get; set; }
         public virtual List<OrderPosition> OrderPositions { get; set; }
+        public virtual List<StorageContent> StorageContent { get; set; }
     }
 
     public class ProductConfiguration : IEntityTypeConfiguration<Product>
@@ -26,6 +27,10 @@ namespace WarehouseManagerAPI.Entities
             builder.HasMany(p => p.OrderPositions)
                 .WithOne(op => op.Product)
                 .HasForeignKey(op => op.ProductId);
+
+            builder.HasMany(p => p.StorageContent)
+                .WithOne(sc => sc.Product)
+                .HasForeignKey(sc => sc.ProductId);
         }
     }
 }
