@@ -287,5 +287,46 @@ namespace WarehouseManagerAPI.Entities
             await _dbContext.StorageContents.AddRangeAsync(storageContents);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task CreatePalletsWithContent(int howManyPallets)
+        {
+            var products = await _dbContext
+                .Products
+                .ToListAsync();
+
+            var pallets = new List<Pallet>();
+            var palletsContent = new List<PalletContent>();
+            var random = new Random(1024);
+
+            for (int i = 0; i < howManyPallets; i++)
+            {
+                var product = products[random.Next(products.Count())];
+                var pallet = new Pallet()
+                {
+                    Id = "10906070" + i,
+                    Width = 800,
+                    Depth = 1200,
+                    Height = 2200
+                };
+
+                var palletVolume = (long)pallet.Width * (long)pallet.Height * (long)pallet.Depth;
+                var productVolume = product.Width * product.Height * product.Depth;
+                var productQty = palletVolume/ (long)productVolume;
+
+                pallet.Weight = productQty * product.Weight + 25;
+
+                pallets.Add(pallet);
+                palletsContent.Add(new PalletContent()
+                {
+                    Pallet = pallet,
+                    Product = product,
+                    Qty = (int)productQty
+                });
+            }
+
+            await _dbContext.Pallets.AddRangeAsync(pallets);
+            await _dbContext.PalletContents.AddRangeAsync(palletsContent);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

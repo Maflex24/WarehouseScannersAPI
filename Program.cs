@@ -47,6 +47,7 @@ await dataGenerator.AddOrders();
 await dataGenerator.GenerateOrderPositions();
 await dataGenerator.CreateStorages();
 await dataGenerator.AddStorageContent();
+await dataGenerator.CreatePalletsWithContent(4);
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
