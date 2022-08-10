@@ -45,6 +45,8 @@ await dataGenerator.GeneratePermissions();
 await dataGenerator.AddProducts();
 await dataGenerator.AddOrders();
 await dataGenerator.GenerateOrderPositions();
+await dataGenerator.CreateStorages();
+await dataGenerator.AddStorageContent();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

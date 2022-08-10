@@ -167,5 +167,125 @@ namespace WarehouseManagerAPI.Entities
             await _dbContext.OrderPositions.AddRangeAsync(orderPositions);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task CreateStorages()
+        {
+            var highStorageNames = new List<string>()
+            {
+                "A1-01-A01",
+                "A1-01-B01",
+                "A1-01-C01",
+                "A1-01-A02",
+                "A1-01-B02",
+                "A1-01-C02",
+                "A1-01-A03",
+                "A1-01-B03",
+                "A1-01-C03",
+            };
+
+            var lowStorageNames = new List<string>()
+            {
+                "A1-02-A01",
+                "A1-02-B01",
+                "A1-02-C01",
+                "A1-02-A02",
+                "A1-02-B02",
+                "A1-02-C02",
+                "A1-02-A03",
+                "A1-02-B03",
+                "A1-02-C03",
+            };
+
+            var wideStorageNames = new List<string>()
+            {
+                "A1-03-A01",
+                "A1-03-B01",
+                "A1-03-C01",
+                "A1-03-A02",
+                "A1-03-B02",
+                "A1-03-C02",
+                "A1-03-A03",
+                "A1-03-B03",
+                "A1-03-C03",
+            };
+
+            var storages = new List<Storage>();
+
+            foreach (var storageName in highStorageNames)
+            {
+                storages.Add(new Storage()
+                {
+                    Id = storageName,
+                    MaxWeight = 1500,
+                    Depth = 1200,
+                    Height = 2300,
+                    Width = 850
+                });   
+            }
+
+            foreach (var storageName in lowStorageNames)
+            {
+                storages.Add(new Storage()
+                {
+                    Id = storageName,
+                    MaxWeight = 700,
+                    Depth = 1200,
+                    Height = 1600,
+                    Width = 850
+                });
+            }
+
+            foreach (var storageName in wideStorageNames)
+            {
+                storages.Add(new Storage()
+                {
+                    Id = storageName,
+                    MaxWeight = 1500,
+                    Depth = 1200,
+                    Height = 2300,
+                    Width = 1100
+                });
+            }
+
+            await _dbContext.Storages.AddRangeAsync(storages);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddStorageContent()
+        {
+            var storages = await _dbContext
+                .Storages
+                .ToListAsync();
+
+            var products = await _dbContext
+                .Products
+                .ToListAsync();
+
+            var random = new Random(1024);
+            var storageContents = new List<StorageContent>();
+
+            foreach (var storage in storages)
+            {
+                var randomTrue = random.Next(100);
+                if (randomTrue > 60)
+                    continue;
+
+                var product = products[random.Next(products.Count())];
+
+                var storageVolume = (long)storage.Width * (long)storage.Height * (long)storage.Depth;
+                var productVolume = product.Width * product.Height * product.Depth;
+                var productQty = storageVolume / (long)productVolume;
+
+                storageContents.Add(new StorageContent()
+                {
+                    Product = product,
+                    Storage = storage,
+                    Qty = (int)productQty
+                });
+            }
+
+            await _dbContext.StorageContents.AddRangeAsync(storageContents);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
