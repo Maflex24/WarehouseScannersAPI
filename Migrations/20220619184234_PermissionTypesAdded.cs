@@ -29,7 +29,7 @@ namespace WarehouseManagerAPI.Migrations
                     table.ForeignKey(
                         name: "FK_EmployeeRole_Employees_EmployeesId",
                         column: x => x.EmployeesId,
-                        principalTable: "Employees",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -64,7 +64,7 @@ namespace WarehouseManagerAPI.Migrations
                     { 4, "Quality" },
                     { 5, "Inbound" },
                     { 6, "Outbound" },
-                    { 7, "Employees" }
+                    { 7, "Accounts" }
                 });
 
             migrationBuilder.CreateIndex(

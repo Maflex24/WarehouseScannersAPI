@@ -10,7 +10,7 @@ namespace WarehouseManagerAPI.Migrations
         {
             migrationBuilder.AddColumn<string>(
                 name: "Password",
-                table: "Employees",
+                table: "Accounts",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -19,7 +19,7 @@ namespace WarehouseManagerAPI.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Password",
-                table: "Employees");
+                table: "Accounts");
         }
     }
 }

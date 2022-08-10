@@ -80,7 +80,7 @@ namespace WarehouseManagerAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("WarehouseManagerAPI.Entities.Permission", b =>

@@ -10,7 +10,7 @@ namespace WarehouseManagerAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Accounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -65,7 +65,7 @@ namespace WarehouseManagerAPI.Migrations
                     table.ForeignKey(
                         name: "FK_EmployeePermission_Employees_EmployeesId",
                         column: x => x.EmployeesId,
-                        principalTable: "Employees",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -142,7 +142,7 @@ namespace WarehouseManagerAPI.Migrations
                 name: "PermissionRole");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Accounts");
 
             migrationBuilder.DropTable(
                 name: "Permissions");

@@ -14,7 +14,7 @@ namespace WarehouseManagerAPI.Entities
 
         }
 
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Account> Accounts { get; set; }
         public DbSet<Permission> Permissions { get; set; }
 
 

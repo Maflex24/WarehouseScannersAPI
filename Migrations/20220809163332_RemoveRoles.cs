@@ -47,7 +47,7 @@ namespace WarehouseManagerAPI.Migrations
                     table.ForeignKey(
                         name: "FK_EmployeeRole_Employees_EmployeesId",
                         column: x => x.EmployeesId,
-                        principalTable: "Employees",
+                        principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(

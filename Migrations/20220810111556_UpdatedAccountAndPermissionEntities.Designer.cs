@@ -12,8 +12,8 @@ using WarehouseManagerAPI.Entities;
 namespace WarehouseManagerAPI.Migrations
 {
     [DbContext(typeof(WarehouseManagerDbContext))]
-    [Migration("20220809163332_RemoveRoles")]
-    partial class RemoveRoles
+    [Migration("20220810111556_UpdatedAccountAndPermissionEntities")]
+    partial class UpdatedAccountAndPermissionEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,47 +24,35 @@ namespace WarehouseManagerAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("EmployeePermission", b =>
+            modelBuilder.Entity("AccountPermission", b =>
                 {
-                    b.Property<Guid>("EmployeesId")
+                    b.Property<Guid>("AccountsId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("PermissionsId")
                         .HasColumnType("int");
 
-                    b.HasKey("EmployeesId", "PermissionsId");
+                    b.HasKey("AccountsId", "PermissionsId");
 
                     b.HasIndex("PermissionsId");
 
-                    b.ToTable("EmployeePermission");
+                    b.ToTable("AccountPermission");
                 });
 
-            modelBuilder.Entity("WarehouseManagerAPI.Entities.Employee", b =>
+            modelBuilder.Entity("WarehouseManagerAPI.Entities.Account", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastName")
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Login")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("RegisteredDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -87,11 +75,11 @@ namespace WarehouseManagerAPI.Migrations
                     b.ToTable("Permissions");
                 });
 
-            modelBuilder.Entity("EmployeePermission", b =>
+            modelBuilder.Entity("AccountPermission", b =>
                 {
-                    b.HasOne("WarehouseManagerAPI.Entities.Employee", null)
+                    b.HasOne("WarehouseManagerAPI.Entities.Account", null)
                         .WithMany()
-                        .HasForeignKey("EmployeesId")
+                        .HasForeignKey("AccountsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

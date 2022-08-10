@@ -57,7 +57,7 @@ namespace WarehouseManagerAPI.Migrations
                     { 4, "Quality" },
                     { 5, "Inbound" },
                     { 6, "Outbound" },
-                    { 7, "Employees" }
+                    { 7, "Accounts" }
                 });
         }
     }

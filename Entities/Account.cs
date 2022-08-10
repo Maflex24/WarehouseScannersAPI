@@ -8,25 +8,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace WarehouseManagerAPI.Entities
 {
-    public class Employee
+    public class Account
     {
         public Guid Id { get; set; }
         public string Login { get; set; }
-        public string Password { get; set; } // todo Entity just for easier testing, with fake data! 
+        public string FullName { get; set; }
         public string PasswordHash { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime RegisteredDate { get; set; }
-        public bool IsActive { get; set; }
         public List<Permission> Permissions { get; set; }
     }
 
-    public class EmployeeConfiguration : IEntityTypeConfiguration<Employee>
+    public class EmployeeConfiguration : IEntityTypeConfiguration<Account>
     {
-        public void Configure(EntityTypeBuilder<Employee> builder)
+        public void Configure(EntityTypeBuilder<Account> builder)
         {
             builder.HasMany(e => e.Permissions)
-                .WithMany(p => p.Employees);
+                .WithMany(p => p.Accounts);
         }
     }
 }
