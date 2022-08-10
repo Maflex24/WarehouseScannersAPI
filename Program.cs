@@ -42,6 +42,9 @@ if (app.Environment.IsDevelopment())
 using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
 await dataGenerator.GeneratePermissions();
+await dataGenerator.AddProducts();
+await dataGenerator.AddOrders();
+await dataGenerator.GenerateOrderPositions();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
