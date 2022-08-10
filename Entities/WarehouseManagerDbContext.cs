@@ -21,6 +21,8 @@ namespace WarehouseManagerAPI.Entities
         public DbSet<OrderPosition> OrderPositions { get; set; }
         public DbSet<Storage> Storages { get; set; }
         public DbSet<StorageContent> StorageContents { get; set; }
+        public DbSet<Pallet> Pallets { get; set; }
+        public DbSet<PalletContent> PalletContents { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
