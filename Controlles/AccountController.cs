@@ -11,7 +11,7 @@ using WarehouseManagerAPI.Services;
 
 namespace WarehouseManagerAPI.Controlles
 {
-    [Route("api/employee")]
+    [Route("api/account")]
     [Authorize]
     [ApiController]
     public class AccountController : ControllerBase
