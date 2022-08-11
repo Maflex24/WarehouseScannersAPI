@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Services;
 
 namespace WarehouseManagerAPI.Entities
@@ -35,9 +36,9 @@ namespace WarehouseManagerAPI.Entities
         }
 
         [HttpGet("product")]
-        public async Task<ActionResult<string>> GetProductLocation([FromQuery] string productId, [FromQuery] int Qty)
+        public async Task<ActionResult<LocationAndQtyDto>> GetProductLocation([FromQuery] string productId, [FromQuery] int Qty)
         {
-            return "A01...";
+            return await _storageService.GetProductLocation(productId, Qty);
         }
     }
 }

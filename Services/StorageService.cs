@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
 
 namespace WarehouseManagerAPI.Services
@@ -12,6 +13,7 @@ namespace WarehouseManagerAPI.Services
     {
         public Task<string> GetEmptyStorage(string palletId);
         public Task AssignPalletToStorage(string palletId, string storageId);
+        public Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty);
     }
 
     public class StorageService : IStorageService
@@ -80,6 +82,39 @@ namespace WarehouseManagerAPI.Services
             _dbContext.Pallets.Remove(pallet);
             _dbContext.PalletContents.RemoveRange(pallet.PalletContent);
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty)
+        {
+            var storageContent = await _dbContext
+                .StorageContents
+                .Where(sc =>
+                    sc.ProductId == productId &&
+                    sc.Qty >= Qty)
+                .OrderBy(sc => sc.Qty)
+                .FirstOrDefaultAsync();
+
+            if (storageContent != null)
+                return new LocationAndQtyDto()
+                {
+                    StorageId = storageContent.StorageId,
+                    Qty = Qty
+                };
+
+            storageContent = await _dbContext
+                .StorageContents
+                .Where(sc => sc.ProductId == productId)
+                .OrderByDescending(sc => sc.Qty)
+                .FirstOrDefaultAsync();
+
+            if (storageContent == null)
+                throw new Exception("There is no more product on storage");
+
+            return new LocationAndQtyDto()
+            {
+                StorageId = storageContent.StorageId,
+                Qty = storageContent.Qty
+            };
         }
     }
 }
