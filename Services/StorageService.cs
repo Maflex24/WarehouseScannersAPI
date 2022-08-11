@@ -28,30 +28,19 @@ namespace WarehouseManagerAPI.Services
                 .Pallets
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
-            var emptyStorages = await _dbContext
+            var storage = await _dbContext
                 .Storages
                 .Include(s => s.StorageContent)
                 .Where(s => !s.StorageContent.Any() && !s.Temporary)
-                .ToListAsync();
+                .OrderBy(s => s.Height)
+                .Where(s => 
+                    s.MaxWeight > pallet.Weight &&
+                    s.Depth >= pallet.Depth &&
+                    s.Height >= pallet.Height &&
+                    s.Width >= pallet.Width)
+                .FirstOrDefaultAsync();
 
-            foreach (var storage in emptyStorages)
-            {
-                if (storage.MaxWeight < pallet.Weight)
-                    continue;
-
-                if (storage.Height < pallet.Height)
-                    continue;
-
-                if (storage.Depth < pallet.Depth)
-                    continue;
-
-                if (storage.Width < pallet.Width)
-                    continue;
-
-                return storage.Id;
-            }
-
-            return null;
+            return storage == null ? null : storage.Id;
         }
     }
 }
