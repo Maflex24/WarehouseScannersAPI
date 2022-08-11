@@ -6,18 +6,26 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WarehouseManagerAPI.Dtos;
+using WarehouseManagerAPI.Services;
 
 namespace WarehouseManagerAPI.Controlles
 {
     [Route("api/order")]
-    [Authorize]
+    //[Authorize] // TODO disabled for easier testing
     [ApiController]
     public class OrderController : ControllerBase
     {
-        [HttpGet]
-        public async Task<List<OrdersListPositionDto>> GetOrdersList()
+        private readonly IOrderService _orderService;
+
+        public OrderController(IOrderService orderService)
         {
-            return new List<OrdersListPositionDto>();
+            _orderService = orderService;
+        }
+
+        [HttpGet]
+        public async Task<OkObjectResult> GetOrdersList()
+        {
+            return Ok(await _orderService.GetOrdersList());
         }
 
         [HttpGet("{orderId}")]

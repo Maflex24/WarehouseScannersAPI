@@ -17,6 +17,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPasswordHasher<Account>, PasswordHasher<Account>>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<DataGenerator>();
 builder.Services.AddHttpContextAccessor();
