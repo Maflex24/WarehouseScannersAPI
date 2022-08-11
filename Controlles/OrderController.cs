@@ -29,9 +29,9 @@ namespace WarehouseManagerAPI.Controlles
         }
 
         [HttpGet("{orderId}")]
-        public async Task<OrderProductsList> GetOrder([FromRoute] string orderId)
+        public async Task<OkObjectResult> GetOrder([FromRoute] string orderId)
         {
-            return new OrderProductsList();
+            return Ok(await _orderService.GetOrder(orderId));
         }
 
         [HttpPut("pick")]

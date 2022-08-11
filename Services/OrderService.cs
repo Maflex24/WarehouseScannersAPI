@@ -12,6 +12,7 @@ namespace WarehouseManagerAPI.Services
     public interface IOrderService
     {
         public Task<List<OrdersListPositionDto>> GetOrdersList();
+        public Task<OrderProductsList> GetOrder(string orderId);
     }
 
     public class OrderService : IOrderService
@@ -67,6 +68,31 @@ namespace WarehouseManagerAPI.Services
             }
 
             return ordersList;
+        }
+
+        public async Task<OrderProductsList> GetOrder(string orderId)
+        {
+            var orderPositions = await _dbContext
+                .OrderPositions
+                .Where(op => op.OrderId == orderId && !op.Completed)
+                .Include(op => op.Product)
+                .Select(op => new OrderPositionDto()
+                {
+                    ProductId = op.ProductId,
+                    Qty = op.Qty,
+                    Weight = op.Product.Weight
+                })
+                .OrderByDescending(op => op.Weight)
+                .ToListAsync();
+
+            if (orderPositions == null)
+                return null;
+
+            return new OrderProductsList()
+            {
+                OrderId = orderId,
+                OrderPositions = orderPositions
+            };
         }
     }
 }
