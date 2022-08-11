@@ -41,13 +41,13 @@ if (app.Environment.IsDevelopment())
 
 using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
-await dataGenerator.GeneratePermissions();
-await dataGenerator.AddProducts();
-await dataGenerator.AddOrders();
-await dataGenerator.GenerateOrderPositions();
-await dataGenerator.CreateStorages();
-await dataGenerator.AddStorageContent();
-await dataGenerator.CreatePalletsWithContent(4);
+//await dataGenerator.GeneratePermissions();
+//await dataGenerator.AddProducts();
+//await dataGenerator.AddOrders();
+//await dataGenerator.GenerateOrderPositions();
+//await dataGenerator.CreateStorages();
+//await dataGenerator.AddStorageContent();
+//await dataGenerator.CreatePalletsWithContent(4);
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

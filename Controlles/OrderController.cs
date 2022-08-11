@@ -25,5 +25,11 @@ namespace WarehouseManagerAPI.Controlles
         {
             return new OrderProductsList();
         }
+
+        [HttpPut("pick")]
+        public async Task PickItem([FromBody] PickDto pickDto)
+        {
+
+        }
     }
 }
