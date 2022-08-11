@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
+using WarehouseManagerAPI.Exceptions;
 
 namespace WarehouseManagerAPI.Services
 {
@@ -32,7 +33,7 @@ namespace WarehouseManagerAPI.Services
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
             if (pallet == null)
-                throw new Exception("Pallet doesn't exist");
+                throw new BadRequestException("Pallet doesn't exist");
 
             var storage = await _dbContext
                 .Storages
@@ -57,10 +58,10 @@ namespace WarehouseManagerAPI.Services
                 .SingleOrDefaultAsync(s => s.Id == storageId);
 
             if (storage == null)
-                throw new Exception("Storage doesn't exist");
+                throw new BadRequestException("Storage doesn't exist");
 
             if (storage.StorageContent.Any())
-                throw new Exception("Storage isn't empty");
+                throw new BadRequestException("Storage isn't empty");
 
             var pallet = await _dbContext
                 .Pallets
@@ -68,7 +69,7 @@ namespace WarehouseManagerAPI.Services
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
             if (pallet == null)
-                throw new Exception("Pallet doesn't exist");
+                throw new BadRequestException("Pallet doesn't exist");
 
             foreach (var palletContent in pallet.PalletContent)
             {

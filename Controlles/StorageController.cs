@@ -25,7 +25,7 @@ namespace WarehouseManagerAPI.Entities
         [HttpGet("empty")]
         public async Task<ActionResult<string>> GetEmptyStorage([FromQuery ]string palletId)
         {
-            return await _storageService.GetEmptyStorage(palletId);
+            return Ok(await _storageService.GetEmptyStorage(palletId));
         }
 
         [HttpPost("pallet")]
@@ -38,7 +38,7 @@ namespace WarehouseManagerAPI.Entities
         [HttpGet("product")]
         public async Task<ActionResult<LocationAndQtyDto>> GetProductLocation([FromQuery] string productId, [FromQuery] int Qty)
         {
-            return await _storageService.GetProductLocation(productId, Qty);
+            return Ok(await _storageService.GetProductLocation(productId, Qty));
         }
     }
 }
