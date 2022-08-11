@@ -48,7 +48,9 @@ var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
 //await dataGenerator.GenerateOrderPositions();
 //await dataGenerator.CreateStorages();
 //await dataGenerator.AddStorageContent();
-//await dataGenerator.CreatePalletsWithContent(4);
+//await dataGenerator.CreatePalletsWithContent(4, "Euro8010", 2200, 800);
+//await dataGenerator.CreatePalletsWithContent(4, "EuroLow8010", 650, 800);
+//await dataGenerator.CreatePalletsWithContent(4, "Block1010", 2200, 1000);
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

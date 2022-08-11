@@ -297,7 +297,7 @@ namespace WarehouseManagerAPI.Entities
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task CreatePalletsWithContent(int howManyPallets)
+        public async Task CreatePalletsWithContent(int howManyPallets, string startedNumber, int height, int width)
         {
             var products = await _dbContext
                 .Products
@@ -312,10 +312,10 @@ namespace WarehouseManagerAPI.Entities
                 var product = products[random.Next(products.Count())];
                 var pallet = new Pallet()
                 {
-                    Id = "10906070" + i,
-                    Width = 800,
+                    Id = startedNumber + i,
+                    Width = width,
                     Depth = 1200,
-                    Height = 2200
+                    Height = height
                 };
 
                 var palletVolume = (long)pallet.Width * (long)pallet.Height * (long)pallet.Depth;
