@@ -30,6 +30,7 @@ namespace WarehouseManagerAPI.Entities
         [HttpPost("pallet")]
         public async Task<ActionResult> AssignPalletToStorage([FromQuery] string palletId, [FromQuery] string storageId)
         {
+            await _storageService.AssignPalletToStorage(palletId, storageId);
             return Ok();
         }
 
