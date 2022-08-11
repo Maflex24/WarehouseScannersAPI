@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WarehouseManagerAPI.Entities;
 
@@ -11,9 +12,10 @@ using WarehouseManagerAPI.Entities;
 namespace WarehouseManagerAPI.Migrations
 {
     [DbContext(typeof(WarehouseManagerDbContext))]
-    partial class WarehouseManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220811121828_AddedProductVolume")]
+    partial class AddedProductVolume
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

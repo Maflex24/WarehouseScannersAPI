@@ -99,6 +99,15 @@ namespace WarehouseManagerAPI.Entities
             if (existedProductsCount == products.Count)
                 return;
 
+            foreach (var product in products)
+            {
+                var height = (double) product.Height / 100;
+                var width = (double) product.Width / 100;
+                var depth = (double) product.Depth / 100;
+
+                product.Volume = (float)Math.Round(height * width * depth, 2);
+            }
+
             await _dbContext.Products.AddRangeAsync(products);
             await _dbContext.SaveChangesAsync();
         }

@@ -16,6 +16,7 @@ namespace WarehouseManagerAPI.Entities
         public int Width { get; set; }
         public int Height { get; set; }
         public int Depth { get; set; }
+        public float Volume { get; set; }
         public virtual List<OrderPosition> OrderPositions { get; set; }
         public virtual List<StorageContent> StorageContent { get; set; }
         public virtual List<PalletContent> PalletContent { get; set; }
