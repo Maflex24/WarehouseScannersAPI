@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
+using WarehouseManagerAPI.Exceptions;
 
 namespace WarehouseManagerAPI.Services
 {
@@ -13,6 +14,7 @@ namespace WarehouseManagerAPI.Services
     {
         public Task<List<OrdersListPositionDto>> GetOrdersList();
         public Task<OrderProductsList> GetOrder(string orderId);
+        public Task PickItem(PickDto pickDto);
     }
 
     public class OrderService : IOrderService
@@ -93,6 +95,46 @@ namespace WarehouseManagerAPI.Services
                 OrderId = orderId,
                 OrderPositions = orderPositions
             };
+        }
+
+        public async Task PickItem(PickDto pickDto)
+        {
+            var storage = await _dbContext
+                .Storages
+                .Include(s => s.StorageContent)
+                .SingleOrDefaultAsync(s => s.Id == pickDto.StorageId);
+
+            var pallet = await _dbContext
+                .Pallets
+                .Include(p => p.PalletContent)
+                .SingleOrDefaultAsync(p => p.Id == pickDto.PalletId);
+
+            var product = await _dbContext
+                .Products
+                .SingleOrDefaultAsync(p => p.Id == pickDto.ProductId);
+
+            if (product == null || pallet == null || storage == null)
+                throw new BadRequestException("Storage/pallet/product don't exist");
+
+            var storageQty = storage.StorageContent.FindAll(sc => sc.ProductId == pickDto.ProductId).Select(pq => pq.Qty).Sum();
+
+            if (storageQty < pickDto.Qty)
+                throw new BadRequestException("There is not enough product Qty on this storage");
+
+            pallet.PalletContent.Add(new PalletContent()
+            {
+                ProductId = pickDto.ProductId,
+                Qty = pickDto.Qty
+            });
+
+            var storageContent =
+                storage.StorageContent.FirstOrDefault(sc => sc.ProductId == pickDto.ProductId && sc.Qty >= pickDto.Qty);
+
+            storageContent.Qty -= pickDto.Qty;
+
+            pallet.Weight += product.Weight * pickDto.Qty;
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

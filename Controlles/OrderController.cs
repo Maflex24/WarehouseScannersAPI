@@ -37,7 +37,7 @@ namespace WarehouseManagerAPI.Controlles
         [HttpPut("pick")]
         public async Task PickItem([FromBody] PickDto pickDto)
         {
-
+            await _orderService.PickItem(pickDto);
         }
     }
 }
