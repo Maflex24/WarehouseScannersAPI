@@ -14,6 +14,7 @@ namespace WarehouseManagerAPI.Services
     {
         public Task<string> GenerateJwtToken(EmployeeLoginDto loginDto);
         public Task ChangePassword(EmployeeChangePasswordDto changePasswordDto);
+        public Task<Account> AddEmployee(string login, string password, string fullName);
     }
 
 
@@ -89,6 +90,21 @@ namespace WarehouseManagerAPI.Services
             user.PasswordHash = _passwordHasher.HashPassword(user, changePasswordDto.NewPassword);
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Account> AddEmployee(string login, string password, string fullName)
+        {
+            var account = new Account()
+            {
+                Login = login,
+                FullName = fullName
+            };
+
+            account.PasswordHash = _passwordHasher.HashPassword(account, password);
+            await _dbContext.Accounts.AddAsync(account);
+            await _dbContext.SaveChangesAsync();
+
+            return account;
         }
     }
 }

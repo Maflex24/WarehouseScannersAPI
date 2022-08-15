@@ -32,6 +32,7 @@ namespace WarehouseManagerAPI.Entities
                 return;
 
             await GeneratePermissions();
+            await AddAcounts();
             await AddProducts();
             await AddOrders(ordersAmount);
             await CreateStorages();
@@ -59,6 +60,21 @@ namespace WarehouseManagerAPI.Entities
             {
                 _dbContext.Permissions.Add(newPermission);
             }
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task AddAcounts()
+        {
+            await _accountService.AddEmployee("inbound", "123456", "Inbound operator");
+            await _accountService.AddEmployee("picker", "123456", "Picker");
+
+            var inboundAccount = await _dbContext.Accounts.Include(a => a.Permissions).SingleOrDefaultAsync(a => a.Login == "inbound");
+            var pickerAccount = await _dbContext.Accounts.Include(a => a.Permissions).SingleOrDefaultAsync(a => a.Login == "picker");
+            var permissions = await _dbContext.Permissions.ToListAsync();
+
+            inboundAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "inbound"));
+            pickerAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "picking"));
 
             await _dbContext.SaveChangesAsync();
         }
