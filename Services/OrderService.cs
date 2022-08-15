@@ -128,6 +128,17 @@ namespace WarehouseManagerAPI.Services
                 Qty = pickDto.Qty
             });
 
+            var orderPosition = await _dbContext
+                .OrderPositions
+                .FirstOrDefaultAsync(op => op.OrderId == pallet.OrderId && op.ProductId == pickDto.ProductId);
+
+            if (orderPosition.Qty - orderPosition.PickedQty < pickDto.Qty)
+                throw new BadRequestException("You try to pick more items than it's in order");
+
+            orderPosition.PickedQty += pickDto.Qty;
+            if (orderPosition.PickedQty == orderPosition.Qty)
+                orderPosition.Completed = true;
+
             var storageContent =
                 storage.StorageContent.FirstOrDefault(sc => sc.ProductId == pickDto.ProductId && sc.Qty >= pickDto.Qty);
 
