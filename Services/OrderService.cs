@@ -118,35 +118,44 @@ namespace WarehouseManagerAPI.Services
                 .Include(s => s.StorageContent)
                 .SingleOrDefaultAsync(s => s.Id == pickDto.StorageId);
 
+            if (storage == null) throw new BadRequestException($"Storage {pickDto.ProductId} does not exist");
+
             var pallet = await _dbContext
                 .Pallets
                 .Include(p => p.PalletContent)
                 .SingleOrDefaultAsync(p => p.Id == pickDto.PalletId);
 
+            if (pallet == null) throw new BadRequestException($"Pallet {pickDto.PalletId} does not exist");
+
             var product = await _dbContext
                 .Products
                 .SingleOrDefaultAsync(p => p.Id == pickDto.ProductId);
 
-            if (product == null || pallet == null || storage == null)
-                throw new BadRequestException("Storage/newPallet/product don't exist");
+            if (product == null) throw new BadRequestException($"Product {pickDto.ProductId} does not exist");
 
-            var storageQty = storage.StorageContent.FindAll(sc => sc.ProductId == pickDto.ProductId).Select(pq => pq.Qty).Sum();
+            var storageProductAvailableQty = storage.StorageContent
+                .Where(sc => sc.ProductId == product.Id)
+                .Select(sc => sc.Qty)
+                .FirstOrDefault();
 
-            if (storageQty < pickDto.Qty)
-                throw new BadRequestException("There is not enough product PickedQty on this storage");
+            if (storageProductAvailableQty < pickDto.Qty)
+                throw new BadRequestException("There is not enough product qty on this storage");
+
+            var orderPosition = await _dbContext
+                .OrderPositions
+                .FirstOrDefaultAsync(op => op.OrderId == pallet.OrderId && op.ProductId == pickDto.ProductId);
+
+            if (orderPosition is null)
+                throw new BadRequestException($"Product {product.Id} is not ordered in current order!");
+
+            if (orderPosition.Qty - orderPosition.PickedQty < pickDto.Qty)
+                throw new BadRequestException("You try to pick more items than is in the order");
 
             pallet.PalletContent.Add(new PalletContent()
             {
                 ProductId = pickDto.ProductId,
                 Qty = pickDto.Qty
             });
-
-            var orderPosition = await _dbContext
-                .OrderPositions
-                .FirstOrDefaultAsync(op => op.OrderId == pallet.OrderId && op.ProductId == pickDto.ProductId);
-
-            if (orderPosition.Qty - orderPosition.PickedQty < pickDto.Qty)
-                throw new BadRequestException("You try to pick more items than it's in order");
 
             orderPosition.PickedQty += pickDto.Qty;
             if (orderPosition.PickedQty == orderPosition.Qty)
