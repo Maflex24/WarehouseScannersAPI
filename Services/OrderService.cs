@@ -161,6 +161,14 @@ namespace WarehouseManagerAPI.Services
             if (orderPosition.PickedQty == orderPosition.Qty)
                 orderPosition.Completed = true;
 
+            var order = await _dbContext
+                .Orders
+                .Include(o => o.OrderPositions)
+                .SingleOrDefaultAsync(o => o.Id == pallet.OrderId);
+
+            if (order.OrderPositions.All(op => op.Completed))
+                order.Status = "Completed";
+
             var storageContent =
                 storage.StorageContent.FirstOrDefault(sc => sc.ProductId == pickDto.ProductId && sc.Qty >= pickDto.Qty);
 
