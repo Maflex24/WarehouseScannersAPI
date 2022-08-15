@@ -133,6 +133,9 @@ namespace WarehouseManagerAPI.Services
 
             storageContent.Qty -= pickDto.Qty;
 
+            if (storageContent.Qty == 0)
+                _dbContext.Remove(storageContent);
+
             pallet.Weight += product.Weight * pickDto.Qty;
 
             await _dbContext.SaveChangesAsync();
