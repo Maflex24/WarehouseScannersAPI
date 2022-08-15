@@ -43,7 +43,7 @@ if (app.Environment.IsDevelopment())
 
 using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
-//await dataGenerator.Seeder();
+await dataGenerator.Seeder();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

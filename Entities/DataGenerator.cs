@@ -25,9 +25,15 @@ namespace WarehouseManagerAPI.Entities
 
         public async Task Seeder()
         {
+            var ordersAmount = 50;
+            var existedOrdersAmount = _dbContext.Orders.Count();
+
+            if (ordersAmount <= existedOrdersAmount)
+                return;
+
             await GeneratePermissions();
             await AddProducts();
-            await AddOrders(50);
+            await AddOrders(ordersAmount);
             await CreateStorages();
             await AddStorageContent();
             await CreatePalletsWithContent(4, "Euro8010", 2200, 800);
