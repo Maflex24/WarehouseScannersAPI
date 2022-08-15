@@ -15,6 +15,7 @@ namespace WarehouseManagerAPI.Services
         public Task<List<OrdersListPositionDto>> GetOrdersList();
         public Task<OrderProductsList> GetOrder(string orderId);
         public Task PickItem(PickDto pickDto);
+        public Task<Pallet> AddPallet(NewPalletDto newPallet);
     }
 
     public class OrderService : IOrderService
@@ -114,7 +115,7 @@ namespace WarehouseManagerAPI.Services
                 .SingleOrDefaultAsync(p => p.Id == pickDto.ProductId);
 
             if (product == null || pallet == null || storage == null)
-                throw new BadRequestException("Storage/pallet/product don't exist");
+                throw new BadRequestException("Storage/newPallet/product don't exist");
 
             var storageQty = storage.StorageContent.FindAll(sc => sc.ProductId == pickDto.ProductId).Select(pq => pq.Qty).Sum();
 
@@ -135,6 +136,30 @@ namespace WarehouseManagerAPI.Services
             pallet.Weight += product.Weight * pickDto.Qty;
 
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Pallet> AddPallet(NewPalletDto newPallet)
+        {
+            var order = await _dbContext
+                .Orders
+                .SingleOrDefaultAsync(o => o.Id == newPallet.OrderId);
+
+            if (order == null)
+                throw new BadRequestException("Order id doesn't exist");
+
+            var pallet = new Pallet()
+            {
+                Id = newPallet.Id,
+                OrderId = newPallet.OrderId,
+                Depth = newPallet.Depth,
+                Width = newPallet.Width,
+                Height = 0
+            };
+
+            await _dbContext.Pallets.AddAsync(pallet);
+            await _dbContext.SaveChangesAsync();
+
+            return pallet;
         }
     }
 }
