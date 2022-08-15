@@ -43,15 +43,7 @@ if (app.Environment.IsDevelopment())
 
 using var scope = app.Services.CreateScope();
 var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
-//await dataGenerator.GeneratePermissions();
-//await dataGenerator.AddProducts();
-//await dataGenerator.AddOrders();
-//await dataGenerator.GenerateOrderPositions();
-//await dataGenerator.CreateStorages();
-//await dataGenerator.AddStorageContent();
-//await dataGenerator.CreatePalletsWithContent(4, "Euro8010", 2200, 800);
-//await dataGenerator.CreatePalletsWithContent(4, "EuroLow8010", 650, 800);
-//await dataGenerator.CreatePalletsWithContent(4, "Block1010", 2200, 1000);
+//await dataGenerator.Seeder();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 

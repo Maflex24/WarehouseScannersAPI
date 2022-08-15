@@ -14,11 +14,25 @@ namespace WarehouseManagerAPI.Entities
     {
         private readonly WarehouseManagerDbContext _dbContext;
         private readonly IAccountService _accountService;
+        private readonly Random random;
 
         public DataGenerator(WarehouseManagerDbContext dbContext, IAccountService accountService)
         {
             _dbContext = dbContext;
             _accountService = accountService;
+            random = new Random(1024);
+        }
+
+        public async Task Seeder()
+        {
+            await GeneratePermissions();
+            await AddProducts();
+            await AddOrders(50);
+            await CreateStorages();
+            await AddStorageContent();
+            await CreatePalletsWithContent(4, "Euro8010", 2200, 800);
+            await CreatePalletsWithContent(4, "EuroLow8010", 650, 800);
+            await CreatePalletsWithContent(4, "Block1010", 2200, 1000);
         }
 
         public async Task GeneratePermissions()
@@ -27,7 +41,6 @@ namespace WarehouseManagerAPI.Entities
             {
                 new Permission() {Name = "picking"},
                 new Permission() {Name = "inbound"},
-                new Permission() {Name = "outbound"},
             };
 
             var existedPermissionsCount = _dbContext.Permissions.Count();
@@ -112,12 +125,15 @@ namespace WarehouseManagerAPI.Entities
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task AddOrders()
+        public async Task AddOrders(int ordersAmount)
         {
-            var orders = new List<Order>();
-            var random = new Random(1024);
+            var existedOrdersCount = _dbContext.Orders.Count();
+            if (existedOrdersCount == ordersAmount)
+                return;
 
-            for (int i = 0; i < 50; i++)
+            var orders = new List<Order>();
+
+            for (var i = 0; i < ordersAmount; i++)
             {
                 var newOrder = new Order
                 {
@@ -129,12 +145,10 @@ namespace WarehouseManagerAPI.Entities
                 orders.Add(newOrder);
             }
 
-            var existedOrdersCount = _dbContext.Orders.Count();
-            if (existedOrdersCount == orders.Count)
-                return;
-
             await _dbContext.Orders.AddRangeAsync(orders);
             await _dbContext.SaveChangesAsync();
+
+            await GenerateOrderPositions();
         }
 
         public async Task GenerateOrderPositions()
@@ -151,7 +165,6 @@ namespace WarehouseManagerAPI.Entities
 
             List<OrderPosition> orderPositions = new List<OrderPosition>();
             var productsTypesQty = products.Count();
-            var random = new Random(1024);
 
             foreach (var orderId in orders)
             {
