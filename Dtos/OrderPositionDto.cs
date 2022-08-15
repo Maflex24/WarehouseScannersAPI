@@ -9,7 +9,8 @@ namespace WarehouseManagerAPI.Dtos
     public class OrderPositionDto
     {
         public string ProductId { get; set; }
-        public int Qty { get; set; }
-        public float Weight { get; set; }
+        public int PickedQty { get; set; }
+        public int ToPick { get; set; }
+        public float SingleWeight { get; set; }
     }
 }

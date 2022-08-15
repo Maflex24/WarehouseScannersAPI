@@ -95,7 +95,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Qty")
+                    b.Property<int>("PickedQty")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -121,7 +121,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<float>("Weight")
+                    b.Property<float>("SingleWeight")
                         .HasColumnType("real");
 
                     b.Property<int>("Width")
@@ -148,7 +148,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Qty")
+                    b.Property<int>("PickedQty")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -193,7 +193,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<float>("Volume")
                         .HasColumnType("real");
 
-                    b.Property<float>("Weight")
+                    b.Property<float>("SingleWeight")
                         .HasColumnType("real");
 
                     b.Property<int>("Width")
@@ -240,7 +240,7 @@ namespace WarehouseManagerAPI.Migrations
                     b.Property<string>("ProductId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Qty")
+                    b.Property<int>("PickedQty")
                         .HasColumnType("int");
 
                     b.Property<string>("StorageId")

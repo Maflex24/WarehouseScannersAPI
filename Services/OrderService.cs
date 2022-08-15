@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
 using WarehouseManagerAPI.Exceptions;
+using WarehouseScannersAPI.Dtos;
 
 namespace WarehouseManagerAPI.Services
 {
@@ -82,19 +83,31 @@ namespace WarehouseManagerAPI.Services
                 .Select(op => new OrderPositionDto()
                 {
                     ProductId = op.ProductId,
-                    Qty = op.Qty,
-                    Weight = op.Product.Weight
+                    PickedQty = op.PickedQty,
+                    ToPick = op.Qty - op.PickedQty,
+                    SingleWeight = op.Product.Weight
                 })
-                .OrderByDescending(op => op.Weight)
+                .OrderByDescending(op => op.SingleWeight)
                 .ToListAsync();
 
             if (orderPositions == null)
                 return null;
 
+            var palletsInOrder = await _dbContext
+                .Pallets
+                .Where(p => p.OrderId == orderId)
+                .Select(p => new PalletInOrderDto()
+                {
+                    PalletId = p.Id,
+                    Weight = p.Weight
+                })
+                .ToListAsync();
+
             return new OrderProductsList()
             {
                 OrderId = orderId,
-                OrderPositions = orderPositions
+                OrderPositions = orderPositions,
+                PickedPallets = palletsInOrder
             };
         }
 
@@ -120,7 +133,7 @@ namespace WarehouseManagerAPI.Services
             var storageQty = storage.StorageContent.FindAll(sc => sc.ProductId == pickDto.ProductId).Select(pq => pq.Qty).Sum();
 
             if (storageQty < pickDto.Qty)
-                throw new BadRequestException("There is not enough product Qty on this storage");
+                throw new BadRequestException("There is not enough product PickedQty on this storage");
 
             pallet.PalletContent.Add(new PalletContent()
             {
