@@ -12,7 +12,7 @@ using WarehouseManagerAPI.Services;
 namespace WarehouseManagerAPI.Controlles
 {
     [Route("api/order")]
-    //[Authorize] // TODO disabled for easier testing
+    [Authorize] // TODO disabled for easier testing
     [ApiController]
     public class OrderController : ControllerBase
     {

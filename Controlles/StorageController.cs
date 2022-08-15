@@ -11,7 +11,7 @@ using WarehouseManagerAPI.Services;
 namespace WarehouseManagerAPI.Entities
 {
     [Route("api/storage")]
-    //[Authorize] // TODO Temporary turned off to easy testing
+    [Authorize] // TODO Temporary turned off to easy testing
     [ApiController]
     public class StorageController : ControllerBase
     {
