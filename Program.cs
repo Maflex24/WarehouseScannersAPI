@@ -30,6 +30,12 @@ builder.Services.AddDbContext<WarehouseManagerDbContext>(options => options.UseS
 var authenticationSettings = AuthenticationSettings.NewSettings();
 builder.ConfigureToken(authenticationSettings);
 builder.Services.AddSingleton(authenticationSettings);
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Picker", policy => policy.RequireClaim("picking"));
+    options.AddPolicy("Inbound", policy => policy.RequireClaim("inbound"));
+});
+
 builder.Services.AddSwaggerGen(opt =>
 {
     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });

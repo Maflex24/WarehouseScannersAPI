@@ -11,7 +11,7 @@ using WarehouseManagerAPI.Services;
 namespace WarehouseManagerAPI.Entities
 {
     [Route("api/storage")]
-    [Authorize] // TODO Temporary turned off to easy testing
+    [Authorize] 
     [ApiController]
     public class StorageController : ControllerBase
     {
@@ -23,12 +23,14 @@ namespace WarehouseManagerAPI.Entities
         }
 
         [HttpGet("empty")]
+        [Authorize(Policy = "Inbound")]
         public async Task<ActionResult<string>> GetEmptyStorage([FromQuery ]string palletId)
         {
             return Ok(await _storageService.GetEmptyStorage(palletId));
         }
 
         [HttpPost("pallet")]
+        [Authorize(Policy = "Inbound")]
         public async Task<ActionResult> AssignPalletToStorage([FromQuery] string palletId, [FromQuery] string storageId)
         {
             await _storageService.AssignPalletToStorage(palletId, storageId);
@@ -36,6 +38,7 @@ namespace WarehouseManagerAPI.Entities
         }
 
         [HttpGet("product")]
+        [Authorize(Policy = "Picker")]
         public async Task<ActionResult<LocationAndQtyDto>> GetProductLocation([FromQuery] string productId, [FromQuery] int Qty)
         {
             return Ok(await _storageService.GetProductLocation(productId, Qty));

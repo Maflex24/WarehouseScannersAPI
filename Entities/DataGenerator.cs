@@ -68,13 +68,17 @@ namespace WarehouseManagerAPI.Entities
         {
             await _accountService.AddEmployee("inbound", "123456", "Inbound operator");
             await _accountService.AddEmployee("picker", "123456", "Picker");
+            await _accountService.AddEmployee("double", "123456", "Double");
 
             var inboundAccount = await _dbContext.Accounts.Include(a => a.Permissions).SingleOrDefaultAsync(a => a.Login == "inbound");
             var pickerAccount = await _dbContext.Accounts.Include(a => a.Permissions).SingleOrDefaultAsync(a => a.Login == "picker");
+            var doubleAccount = await _dbContext.Accounts.Include(a => a.Permissions).SingleOrDefaultAsync(a => a.Login == "double");
             var permissions = await _dbContext.Permissions.ToListAsync();
 
             inboundAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "inbound"));
             pickerAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "picking"));
+            doubleAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "picking"));
+            doubleAccount.Permissions.Add(permissions.SingleOrDefault(p => p.Name == "inbound"));
 
             await _dbContext.SaveChangesAsync();
         }
@@ -311,7 +315,7 @@ namespace WarehouseManagerAPI.Entities
             foreach (var storage in storages)
             {
                 var randomTrue = random.Next(100);
-                if (randomTrue > 60)
+                if (randomTrue > 70)
                     continue;
 
                 var product = products[random.Next(products.Count())];

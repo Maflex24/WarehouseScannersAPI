@@ -12,7 +12,7 @@ using WarehouseManagerAPI.Services;
 namespace WarehouseManagerAPI.Controlles
 {
     [Route("api/order")]
-    [Authorize] // TODO disabled for easier testing
+    [Authorize] 
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -24,24 +24,28 @@ namespace WarehouseManagerAPI.Controlles
         }
 
         [HttpGet]
+        [Authorize(Policy = "Picker")]
         public async Task<OkObjectResult> GetOrdersList()
         {
             return Ok(await _orderService.GetOrdersList());
         }
 
         [HttpGet("{orderId}")]
+        [Authorize(Policy = "Picker")]
         public async Task<OkObjectResult> GetOrder([FromRoute] string orderId)
         {
             return Ok(await _orderService.GetOrder(orderId));
         }
 
         [HttpPut("pick")]
+        [Authorize(Policy = "Picker")]
         public async Task PickItem([FromBody] PickDto pickDto)
         {
             await _orderService.PickItem(pickDto);
         }
 
         [HttpPost("pallet")]
+        [Authorize(Policy = "Picker")]
         public async Task<ActionResult> AddPallet(NewPalletDto newPallet)
         {
             var pallet = await _orderService.AddPallet(newPallet);
