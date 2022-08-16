@@ -30,18 +30,28 @@ namespace WarehouseManagerAPI.Services
 
         public async Task<OrdersQueryResults> GetOrdersList(OrdersQuery ordersQuery)
         {
-            var orders = await _dbContext
+            var query = _dbContext
                 .Orders
-                .Where(o => o.Status == "Released" && o.OrderPositions.Any())
+                .Where(o => o.Status == "Released" && o.OrderPositions.Any());
+
+            if (ordersQuery.Created != null)
+                query = query
+                    .Where(o => o.Created.Date == ordersQuery.Created);
+
+            var orders = await query
                 .OrderBy(o => o.Created)
                 .Skip(ordersQuery.Page * ordersQuery.ResultPerQuery - ordersQuery.ResultPerQuery)
                 .Take(ordersQuery.ResultPerQuery)
                 .Include(o => o.OrderPositions)
                 .ToListAsync();
 
-            var totalOrders = _dbContext
-                .Orders
-                .Count(o => o.Status == "Released" && o.OrderPositions.Any());
+            int totalOrders;
+            if (ordersQuery.Created != null)
+                totalOrders = _dbContext.Orders.Where(o => o.Created.Date == ordersQuery.Created)
+                    .Count(o => o.Status == "Released" && o.OrderPositions.Any());
+            else
+                totalOrders = _dbContext.Orders.Count(o => o.Status == "Released" && o.OrderPositions.Any());
+
 
             var products = await _dbContext
                 .Products
