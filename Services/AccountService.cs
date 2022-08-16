@@ -48,7 +48,7 @@ namespace WarehouseManagerAPI.Services
             if (passwordVerificationResult == PasswordVerificationResult.Failed)
                 throw new BadRequestException("Login or password is not valid");
 
-            var permissions = employee.Permissions.Select(p => p.Id.ToString()).ToList();
+            var permissions = employee.Permissions.Select(p => p.Name.ToString()).ToList();
 
             var claims = new List<Claim>
             {
