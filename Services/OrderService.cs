@@ -76,6 +76,13 @@ namespace WarehouseManagerAPI.Services
 
         public async Task<OrderProductsList> GetOrder(string orderId)
         {
+            var orderExist = _dbContext
+                .Orders
+                .Any(o => o.Id == orderId);
+
+            if (!orderExist)
+                throw new BadRequestException($"Order id {orderId} doesn't exist");
+
             var orderPositions = await _dbContext
                 .OrderPositions
                 .Where(op => op.OrderId == orderId && !op.Completed)
