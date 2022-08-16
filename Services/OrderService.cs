@@ -13,7 +13,7 @@ namespace WarehouseManagerAPI.Services
 {
     public interface IOrderService
     {
-        public Task<List<OrdersListPositionDto>> GetOrdersList();
+        public Task<OrdersQueryResults> GetOrdersList(OrdersQuery ordersQuery);
         public Task<OrderProductsList> GetOrder(string orderId);
         public Task PickItem(PickDto pickDto);
         public Task<Pallet> AddPallet(NewPalletDto newPallet);
@@ -28,14 +28,20 @@ namespace WarehouseManagerAPI.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<OrdersListPositionDto>> GetOrdersList()
+        public async Task<OrdersQueryResults> GetOrdersList(OrdersQuery ordersQuery)
         {
             var orders = await _dbContext
                 .Orders
-                .Include(o => o.OrderPositions)
                 .Where(o => o.Status == "Released" && o.OrderPositions.Any())
                 .OrderBy(o => o.Created)
+                .Skip(ordersQuery.Page * ordersQuery.ResultPerQuery - ordersQuery.ResultPerQuery)
+                .Take(ordersQuery.ResultPerQuery)
+                .Include(o => o.OrderPositions)
                 .ToListAsync();
+
+            var totalOrders = _dbContext
+                .Orders
+                .Count(o => o.Status == "Released" && o.OrderPositions.Any());
 
             var products = await _dbContext
                 .Products
@@ -71,7 +77,7 @@ namespace WarehouseManagerAPI.Services
                 ordersList.Add(orderListPosition);
             }
 
-            return ordersList;
+            return new OrdersQueryResults(ordersQuery, ordersList, totalOrders);
         }
 
         public async Task<OrderProductsList> GetOrder(string orderId)

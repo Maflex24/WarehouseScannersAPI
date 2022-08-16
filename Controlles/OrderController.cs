@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using WarehouseManagerAPI.Dtos;
 using WarehouseManagerAPI.Entities;
 using WarehouseManagerAPI.Services;
+using WarehouseScannersAPI.Dtos;
 
 namespace WarehouseManagerAPI.Controlles
 {
@@ -25,9 +26,9 @@ namespace WarehouseManagerAPI.Controlles
 
         [HttpGet]
         [Authorize(Policy = "Picker")]
-        public async Task<OkObjectResult> GetOrdersList()
+        public async Task<OkObjectResult> GetOrdersList([FromQuery] OrdersQuery ordersQuery)
         {
-            return Ok(await _orderService.GetOrdersList());
+            return Ok(await _orderService.GetOrdersList(ordersQuery));
         }
 
         [HttpGet("{orderId}")]
