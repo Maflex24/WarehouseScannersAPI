@@ -90,9 +90,6 @@ namespace WarehouseManagerAPI.Services
                 .OrderByDescending(op => op.SingleWeight)
                 .ToListAsync();
 
-            if (orderPositions == null)
-                return null;
-
             var palletsInOrder = await _dbContext
                 .Pallets
                 .Where(p => p.OrderId == orderId)
@@ -103,9 +100,24 @@ namespace WarehouseManagerAPI.Services
                 })
                 .ToListAsync();
 
+            float productsWeight = 0, productsVolume = 0;
+
+            var products = await _dbContext
+                .Products
+                .Select(p => new {Id = p.Id, Volume = p.Volume})
+                .ToListAsync();
+
+            foreach (var orderPosition in orderPositions)
+            {
+                productsWeight += orderPosition.SingleWeight * orderPosition.ToPick;
+                productsVolume += products.FirstOrDefault(p => p.Id == orderPosition.ProductId).Volume * orderPosition.ToPick;
+            }
+
             return new OrderProductsList()
             {
                 OrderId = orderId,
+                ProductsWeightLeft = productsWeight,
+                ProductsVolumeLeft = productsVolume,
                 OrderPositions = orderPositions,
                 PickedPallets = palletsInOrder
             };
