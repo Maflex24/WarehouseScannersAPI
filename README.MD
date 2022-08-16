@@ -3,71 +3,15 @@
 ## What is "Warehouse Scanners API?"
 Warehouse Scanners API goal is to connect warehouse remote scanners with data from server. By API requests employe scanner get data about products, order, products locations (storage), and all what is needed to complete order. API allowes to log in on employee account and authorize requests by account token (claims). <br/> 
 
-
-
 It's not entire ERP system. We have no possibility to change more constant data, like storages, products types etc.   
 Entites should have more complex data inside, like shipment address, invoice data etc. In this project is only, what is needed to work with scanners. 
-
-<br/>
-
-# Endpoints
-
-## Account endpoints
-
-> **POST** /api/account/login
-
-When user log-in sucesfully it returns jwt token, used to authorization any other API operation.
-
-> **POST** /api/account/password
-
-Allow user to change password 
-
-<br/> 
-
-## Storage endpoints
-
-> **GET** /api/storage/empty
-
-Based on `PalletId` returns valid, empty storage location, where we can fit pallet. Service check:
-- are pallet dimensions smaller than storage dimensions
-- isn't pallet too heavy for specific storage
-- storage is smallest as possible, to not waste huge space for small pallets. 
-
-> **POST** /api/storage/pallet
-
-If `Storage` and `Pallet` data are valid, API assign products from pallet to storage. Then pallet, and pallet content are removed. All pallet content is assign to storage space now. 
-
-> **GET** /api/storage/product
-
-Based on `productId`, and `Qty` API search for product location, started from smallest qty values (to not get products from fresh storage, if it's enough in other place). <br/>
-If there is not enough product amount on any location, API return location where is most qty of this product. That's why API returns `Qty` value too, not only `storageId`.
-
-<br/>
-
-## Order endpoints
-
-> **GET** api/order
-
-Returns orders list, ordered by creation date. Have information about total products qty, volume, and weight.
-
-> **GET** api/order/{orderId}
-
-Returns details about specific order, requaires to start picking 
-
-> **PUT** api/order/pick
-
-Allowes to move products from storage to pallet of specific id, and order. Program check conditions and update storage, pallet and order data. 
-
-> **POST** api/order/pallet
-
-Creates new pallet for specyfic order. When picker picking need to assign product to some pallet. 
 
 <br/>
 
 # Example process flow
 
 ## Inbound
-1. Get empty location for specyfic pallet
+1. Get empty location for specific pallet
 
     > **STORAGE GET** /api/storage/empty/palletId=Euro80100
 
@@ -83,8 +27,34 @@ Creates new pallet for specyfic order. When picker picking need to assign produc
 ## Picking
 1. Get orders list
     > **ORDER GET** api/order
+    ```
+    [
+        {
+            "orderId": "220813054839",
+            "created": "2022-08-13T17:48:39.4965552",
+            "productsQty": 53,
+            "productsWeight": 790.2,
+            "productsVolume": 3649.96
+        },
+        {
+            "orderId": "220813085239",
+            "created": "2022-08-13T20:52:39.4965589",
+            "productsQty": 84,
+            "productsWeight": 2062.4,
+            "productsVolume": 10039.73
+        },
+        {
+            "orderId": "220813085939",
+            "created": "2022-08-13T20:59:39.4965577",
+            "productsQty": 69,
+            "productsWeight": 3620.9,
+            "productsVolume": 17200.35
+        }
+        (...)
+    ]
+    ```
 
-2. Pick order from list
+2. Choose one order from list
     > **ORDER GET** api/order/220814054339
 
 3. You receive order data
@@ -126,10 +96,10 @@ Creates new pallet for specyfic order. When picker picking need to assign produc
     }
     ```
 
-4. Choose product to pick, and find storage location
+5. Choose product to pick, and find storage location
     > **STORAGE GET** api/storage/product?productId=18ActiveSub&Qty=40
 
-5. Receive product location  
+6. Receive product location  
 In current case there is not a storage with enough product qty, that's why from current location can be picked only 11/40 pieces. 
     ```
     {
@@ -138,7 +108,7 @@ In current case there is not a storage with enough product qty, that's why from 
     }   
     ```
 
-6. Pick items 
+7. Pick items 
     > **ORDER PUT** api/order/pick
     ```
     {
@@ -149,6 +119,6 @@ In current case there is not a storage with enough product qty, that's why from 
     }
     ```
 
-7. Repeat until order will be complete.
+8. Repeat until order will be complete.
 
-**PICK** Endpoints update order positions, storage, and pallet statuses. When you finish last pick, order status will be changes to completed.
+**PICK** Endpoint update order positions, storages, and pallets statuses. When you finish last pick, order status will be changed to completed.
