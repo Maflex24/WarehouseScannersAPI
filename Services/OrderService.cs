@@ -22,10 +22,12 @@ namespace WarehouseManagerAPI.Services
     public class OrderService : IOrderService
     {
         private readonly WarehouseManagerDbContext _dbContext;
+        private readonly ILogger<OrderService> _logger;
 
-        public OrderService(WarehouseManagerDbContext dbContext)
+        public OrderService(WarehouseManagerDbContext dbContext, ILogger<OrderService> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<OrdersQueryResults> GetOrdersList(OrdersQuery ordersQuery)
@@ -215,6 +217,8 @@ namespace WarehouseManagerAPI.Services
             pallet.Weight += product.Weight * pickDto.Qty;
 
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation($"PICKING | Picked {pickDto.Qty} of {pickDto.ProductId} from {pickDto.StorageId} to pallet {pickDto.PalletId} and order {pallet.OrderId}");
         }
 
         public async Task<Pallet> AddPallet(NewPalletDto newPallet)
@@ -238,6 +242,7 @@ namespace WarehouseManagerAPI.Services
             await _dbContext.Pallets.AddAsync(pallet);
             await _dbContext.SaveChangesAsync();
 
+            _logger.LogInformation($"AddedPallet | Added pallet {pallet.Id} to order {pallet.OrderId}");
             return pallet;
         }
     }

@@ -20,10 +20,12 @@ namespace WarehouseManagerAPI.Services
     public class StorageService : IStorageService
     {
         private readonly WarehouseManagerDbContext _dbContext;
+        private readonly ILogger<StorageService> _logger;
 
-        public StorageService(WarehouseManagerDbContext dbContext)
+        public StorageService(WarehouseManagerDbContext dbContext, ILogger<StorageService> logger)
         {
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         public async Task<string> GetEmptyStorage(string palletId)
@@ -47,6 +49,7 @@ namespace WarehouseManagerAPI.Services
                     s.Width >= pallet.Width)
                 .FirstOrDefaultAsync();
 
+            _logger.Log(LogLevel.Information, "Get Empty storage");
             return storage == null ? null : storage.Id;
         }
 
@@ -83,6 +86,8 @@ namespace WarehouseManagerAPI.Services
             _dbContext.Pallets.Remove(pallet);
             _dbContext.PalletContents.RemoveRange(pallet.PalletContent);
             await _dbContext.SaveChangesAsync();
+
+            _logger.LogInformation($"PalletToStorage | Pallet {palletId} assigned to {storageId}");
         }
 
         public async Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty)
