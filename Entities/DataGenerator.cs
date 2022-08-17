@@ -25,7 +25,7 @@ namespace WarehouseManagerAPI.Entities
 
         public async Task Seeder()
         {
-            var ordersAmount = 50;
+            var ordersAmount = 100;
             var existedOrdersAmount = _dbContext.Orders.Count();
 
             if (ordersAmount <= existedOrdersAmount)
@@ -37,9 +37,9 @@ namespace WarehouseManagerAPI.Entities
             await AddOrders(ordersAmount);
             await CreateStorages();
             await AddStorageContent();
-            await CreatePalletsWithContent(4, "Euro8010", 2200, 800);
-            await CreatePalletsWithContent(4, "EuroLow8010", 650, 800);
-            await CreatePalletsWithContent(4, "Block1010", 2200, 1000);
+            await CreatePalletsWithContent(20, "Euro8010", 2200, 800);
+            await CreatePalletsWithContent(20, "EuroLow8010", 650, 800);
+            await CreatePalletsWithContent(10, "Block1010", 2200, 1000);
         }
 
         public async Task GeneratePermissions()
@@ -98,9 +98,27 @@ namespace WarehouseManagerAPI.Entities
                 },
                 new Product()
                 {
+                    Id = "15PassiveSpeaker",
+                    Name = "15' Passive 2-way speaker",
+                    Weight = 11.4f,
+                    Width = 450,
+                    Depth = 370,
+                    Height = 690,
+                },
+                new Product()
+                {
                     Id = "10ActiveSpeaker",
                     Name = "10' Active 2-way speaker",
                     Weight = 15.0f,
+                    Width = 361,
+                    Depth = 310,
+                    Height = 495,
+                },
+                new Product()
+                {
+                    Id = "10PassiveSpeaker",
+                    Name = "10' Passive 2-way speaker",
+                    Weight = 12.0f,
                     Width = 361,
                     Depth = 310,
                     Height = 495,
@@ -116,6 +134,15 @@ namespace WarehouseManagerAPI.Entities
                 },
                 new Product()
                 {
+                    Id = "8PassiveSpeaker",
+                    Name = "8' Active 2-way speaker",
+                    Weight = 5.9f,
+                    Width = 313,
+                    Depth = 258,
+                    Height = 486,
+                },
+                new Product()
+                {
                     Id = "18ActiveSub",
                     Name = "Active 18' Subwoofer",
                     Weight = 45f,
@@ -125,9 +152,27 @@ namespace WarehouseManagerAPI.Entities
                 },
                 new Product()
                 {
+                    Id = "18PassiveSub",
+                    Name = "Passive 18' Subwoofer",
+                    Weight = 38f,
+                    Width = 530,
+                    Depth = 580,
+                    Height = 693,
+                },
+                new Product()
+                {
                     Id = "2x18ActiveSub",
                     Name = "2x Active 18' Subwoofer",
                     Weight = 92.5f,
+                    Width = 550,
+                    Depth = 680,
+                    Height = 1200,
+                },
+                new Product()
+                {
+                    Id = "2x18PassiveSub",
+                    Name = "2x Passive 18' Subwoofer",
+                    Weight = 84.5f,
                     Width = 550,
                     Depth = 680,
                     Height = 1200,
@@ -163,12 +208,13 @@ namespace WarehouseManagerAPI.Entities
             {
                 var newOrder = new Order
                 {
-                    Created = DateTime.Now.AddMinutes(-random.Next(1, 4320)),
+                    Created = DateTime.Now.AddSeconds(-random.Next(1, 345600)),
                     Status = "Released"
                 };
 
-                newOrder.Id = newOrder.Created.ToString("yyMMddhhmmss");
+                newOrder.Id = newOrder.Created.ToString("yyMMdd-hhmmss-" + i.ToString().PadLeft(2, '0'));
                 orders.Add(newOrder);
+
             }
 
             await _dbContext.Orders.AddRangeAsync(orders);
@@ -199,7 +245,7 @@ namespace WarehouseManagerAPI.Entities
                 for (var i = 0; i < howManyProducts; i++)
                 {
                     var randomTrue = random.Next(100);
-                    if (randomTrue > 50)
+                    if (randomTrue > 65)
                         continue;
 
                     orderPositions.Add(new OrderPosition()
@@ -229,10 +275,7 @@ namespace WarehouseManagerAPI.Entities
                 "A1-01-A03",
                 "A1-01-B03",
                 "A1-01-C03",
-            };
 
-            var lowStorageNames = new List<string>()
-            {
                 "A1-02-A01",
                 "A1-02-B01",
                 "A1-02-C01",
@@ -242,10 +285,7 @@ namespace WarehouseManagerAPI.Entities
                 "A1-02-A03",
                 "A1-02-B03",
                 "A1-02-C03",
-            };
 
-            var wideStorageNames = new List<string>()
-            {
                 "A1-03-A01",
                 "A1-03-B01",
                 "A1-03-C01",
@@ -255,6 +295,124 @@ namespace WarehouseManagerAPI.Entities
                 "A1-03-A03",
                 "A1-03-B03",
                 "A1-03-C03",
+
+                "A1-04-A01",
+                "A1-04-B01",
+                "A1-04-C01",
+                "A1-04-A02",
+                "A1-04-B02",
+                "A1-04-C02",
+                "A1-04-A03",
+                "A1-04-B03",
+                "A1-04-C03",
+
+                "A1-05-A01",
+                "A1-05-B01",
+                "A1-05-C01",
+                "A1-05-A02",
+                "A1-05-B02",
+                "A1-05-C02",
+                "A1-05-A03",
+                "A1-05-B03",
+                "A1-05-C03",
+            };
+
+            var lowStorageNames = new List<string>()
+            {
+                "A1-06-A01",
+                "A1-06-B01",
+                "A1-06-C01",
+                "A1-06-D01",
+                "A1-06-A02",
+                "A1-06-B02",
+                "A1-06-C02",
+                "A1-06-D02",
+                "A1-06-A03",
+                "A1-06-B03",
+                "A1-06-C03",
+                "A1-06-D03",
+
+                "A1-07-A01",
+                "A1-07-B01",
+                "A1-07-C01",
+                "A1-07-D01",
+                "A1-07-A02",
+                "A1-07-B02",
+                "A1-07-C02",
+                "A1-07-D02",
+                "A1-07-A03",
+                "A1-07-B03",
+                "A1-07-C03",
+                "A1-07-D03",
+
+                "A1-08-A01",
+                "A1-08-B01",
+                "A1-08-C01",
+                "A1-08-D01",
+                "A1-08-A02",
+                "A1-08-B02",
+                "A1-08-C02",
+                "A1-08-D02",
+                "A1-08-A03",
+                "A1-08-B03",
+                "A1-08-C03",
+                "A1-08-D03",
+
+                "A1-09-A01",
+                "A1-09-B01",
+                "A1-09-C01",
+                "A1-09-D01",
+                "A1-09-A02",
+                "A1-09-B02",
+                "A1-09-C02",
+                "A1-09-D02",
+                "A1-09-A03",
+                "A1-09-B03",
+                "A1-09-C03",
+                "A1-09-D03",
+            };
+
+            var wideStorageNames = new List<string>()
+            {
+                "A1-10-A01",
+                "A1-10-B01",
+                "A1-10-C01",
+                "A1-10-A02",
+                "A1-10-B02",
+                "A1-10-C02",
+                "A1-10-A03",
+                "A1-10-B03",
+                "A1-10-C03",
+
+                "A1-11-A01",
+                "A1-11-B01",
+                "A1-11-C01",
+                "A1-11-A02",
+                "A1-11-B02",
+                "A1-11-C02",
+                "A1-11-A03",
+                "A1-11-B03",
+                "A1-11-C03",
+
+                "A1-12-A01",
+                "A1-12-B01",
+                "A1-12-C01",
+                "A1-12-A02",
+                "A1-12-B02",
+                "A1-12-C02",
+                "A1-12-A03",
+                "A1-12-B03",
+                "A1-12-C03",
+
+                "A1-13-A01",
+                "A1-13-B01",
+                "A1-13-C01",
+                "A1-13-A02",
+                "A1-13-B02",
+                "A1-13-C02",
+                "A1-13-A03",
+                "A1-13-B03",
+                "A1-13-C03",
             };
 
             var storages = new List<Storage>();
