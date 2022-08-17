@@ -49,7 +49,6 @@ namespace WarehouseManagerAPI.Services
                     s.Width >= pallet.Width)
                 .FirstOrDefaultAsync();
 
-            _logger.Log(LogLevel.Information, "Get Empty storage");
             return storage == null ? null : storage.Id;
         }
 
@@ -87,7 +86,7 @@ namespace WarehouseManagerAPI.Services
             _dbContext.PalletContents.RemoveRange(pallet.PalletContent);
             await _dbContext.SaveChangesAsync();
 
-            _logger.LogInformation($"PalletToStorage | Pallet {palletId} assigned to {storageId}");
+            _logger.LogInformation($"INBOUND | Pallet [{palletId}] assigned to [{storageId}]");
         }
 
         public async Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty)

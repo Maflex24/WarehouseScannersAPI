@@ -218,7 +218,7 @@ namespace WarehouseManagerAPI.Services
 
             await _dbContext.SaveChangesAsync();
 
-            _logger.LogInformation($"PICKING | Picked {pickDto.Qty} of {pickDto.ProductId} from {pickDto.StorageId} to pallet {pickDto.PalletId} and order {pallet.OrderId}");
+            _logger.LogInformation($"PICKING | Picked [{pickDto.Qty}] of [{pickDto.ProductId}] from [{pickDto.StorageId}] to pallet [{pickDto.PalletId}] and order [{pallet.OrderId}]");
         }
 
         public async Task<Pallet> AddPallet(NewPalletDto newPallet)
@@ -242,7 +242,7 @@ namespace WarehouseManagerAPI.Services
             await _dbContext.Pallets.AddAsync(pallet);
             await _dbContext.SaveChangesAsync();
 
-            _logger.LogInformation($"AddedPallet | Added pallet {pallet.Id} to order {pallet.OrderId}");
+            _logger.LogInformation($"PALLET | Added pallet {pallet.Id} to order {pallet.OrderId}");
             return pallet;
         }
     }

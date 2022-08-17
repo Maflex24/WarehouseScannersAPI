@@ -9,6 +9,7 @@ using WarehouseManagerAPI.Authentication;
 using WarehouseManagerAPI.Entities;
 using WarehouseManagerAPI.Middleware;
 using WarehouseManagerAPI.Services;
+using WarehouseScannersAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IStorageService, StorageService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<ResponseTimeMiddleware>();
 builder.Services.AddScoped<DataGenerator>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmployeeContextService, EmployeeContextService>();
@@ -83,6 +85,7 @@ var dataGenerator = scope.ServiceProvider.GetService<DataGenerator>();
 await dataGenerator.Seeder();
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<ResponseTimeMiddleware>();
 
 app.UseAuthentication();
 app.UseHttpsRedirection();
