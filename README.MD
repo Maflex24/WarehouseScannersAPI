@@ -21,7 +21,7 @@ All accounts password is `123456`;
 
     > **STORAGE GET** /api/storage/empty/palletId=Euro80100
 
-2. Returns empty storage location, valid for pallet size and weight
+2. You will get empty storage location, valid for pallet size and weight
 
     > A1-01-B01
 
