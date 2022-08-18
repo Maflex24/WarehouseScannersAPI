@@ -31,7 +31,6 @@ namespace WarehouseManagerAPI.Services
             _passwordHasher = passwordHasher;
             _authenticationSettings = authenticationSettings;
             _employeeContextService = employeeContextService;
-
         }
 
         public async Task<string> GenerateJwtToken(EmployeeLoginDto loginDto)

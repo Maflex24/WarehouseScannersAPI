@@ -176,7 +176,7 @@ namespace WarehouseManagerAPI.Services
                 .FirstOrDefault();
 
             if (storageProductAvailableQty < pickDto.Qty)
-                throw new BadRequestException("There is not enough product qty on this storage");
+                throw new BadRequestException($"There is not enough [{pickDto.ProductId}] qty on this storage. It's [{storageProductAvailableQty}], you want to pick [{pickDto.Qty}]");
 
             var orderPosition = await _dbContext
                 .OrderPositions
@@ -228,7 +228,7 @@ namespace WarehouseManagerAPI.Services
                 .SingleOrDefaultAsync(o => o.Id == newPallet.OrderId);
 
             if (order == null)
-                throw new BadRequestException("Order id doesn't exist");
+                throw new BadRequestException($"Order [{newPallet.OrderId}] doesn't exist");
 
             var pallet = new Pallet()
             {
