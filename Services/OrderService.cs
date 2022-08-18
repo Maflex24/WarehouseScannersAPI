@@ -48,7 +48,6 @@ namespace WarehouseScannersAPI.Services
             else
                 totalOrders = _dbContext.Orders.Count(o => o.Status == "Released" && o.OrderPositions.Any());
 
-
             var products = await _dbContext
                 .Products
                 .Select(p => new {Id = p.Id, Volume = p.Volume, Weight = p.Weight})
@@ -99,14 +98,6 @@ namespace WarehouseScannersAPI.Services
                 .OrderPositions
                 .Where(op => op.OrderId == orderId && !op.Completed)
                 .Include(op => op.Product)
-                .Select(op => new OrderPositionDto()
-                {
-                    ProductId = op.ProductId,
-                    PickedQty = op.PickedQty,
-                    ToPick = op.Qty - op.PickedQty,
-                    SingleWeight = op.Product.Weight
-                })
-                .OrderByDescending(op => op.SingleWeight)
                 .ToListAsync();
 
             var palletsInOrder = await _dbContext
@@ -121,23 +112,29 @@ namespace WarehouseScannersAPI.Services
 
             float productsWeight = 0, productsVolume = 0;
 
-            var products = await _dbContext
-                .Products
-                .Select(p => new {Id = p.Id, Volume = p.Volume})
-                .ToListAsync();
-
             foreach (var orderPosition in orderPositions)
             {
-                productsWeight += orderPosition.SingleWeight * orderPosition.ToPick;
-                productsVolume += products.FirstOrDefault(p => p.Id == orderPosition.ProductId).Volume * orderPosition.ToPick;
+                productsWeight += orderPosition.Product.Weight * (orderPosition.Qty - orderPosition.PickedQty);
+                productsVolume += orderPosition.Product.Volume * (orderPosition.Qty - orderPosition.PickedQty);
             }
+
+            var orderPositionsDto = orderPositions
+                .Select(op => new OrderPositionDto()
+                {
+                    ProductId = op.ProductId,
+                    PickedQty = op.PickedQty,
+                    ToPick = op.Qty - op.PickedQty,
+                    SingleWeight = op.Product.Weight
+                })
+                .OrderByDescending(op => op.SingleWeight)
+                .ToList();
 
             return new OrderProductsList()
             {
                 OrderId = orderId,
                 ProductsWeightLeft = productsWeight,
                 ProductsVolumeLeft = productsVolume,
-                OrderPositions = orderPositions,
+                OrderPositions = orderPositionsDto,
                 PickedPallets = palletsInOrder
             };
         }
@@ -223,6 +220,9 @@ namespace WarehouseScannersAPI.Services
 
             if (order == null)
                 throw new BadRequestException($"Order [{newPallet.OrderId}] doesn't exist");
+
+            if(newPallet.Depth < 300 || newPallet.Width < 600)
+                throw new BadRequestException("Not valid pallet dimensions");
 
             var pallet = new Pallet()
             {
