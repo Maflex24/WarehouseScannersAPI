@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WarehouseScannersAPI.Dtos;
-
-namespace WarehouseScannersAPI.Dtos
+﻿namespace WarehouseScannersAPI.Dtos
 {
     public class OrderProductsList
     {

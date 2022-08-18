@@ -1,10 +1,7 @@
-using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
-using WarehouseScannersAPI;
 using WarehouseScannersAPI.Authentication;
 using WarehouseScannersAPI.Entities;
 using WarehouseScannersAPI.Middleware;

@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using WarehouseScannersAPI.Authentication;
 using WarehouseScannersAPI.Dtos;
 using WarehouseScannersAPI.Entities;
 using WarehouseScannersAPI.Exceptions;

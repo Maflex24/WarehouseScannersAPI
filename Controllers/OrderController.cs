@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WarehouseScannersAPI.Dtos;
-using WarehouseScannersAPI.Entities;
 using WarehouseScannersAPI.Services;
-using WarehouseScannersAPI.Dtos;
 
-namespace WarehouseScannersAPI.Controlles
+
+namespace WarehouseScannersAPI.Controllers
 {
     [Route("api/order")]
     [Authorize] 

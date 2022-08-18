@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WarehouseScannersAPI.Exceptions
+﻿namespace WarehouseScannersAPI.Exceptions
 {
     public class InvalidPasswordException : Exception
     {
