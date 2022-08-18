@@ -20,12 +20,12 @@ namespace WarehouseScannersAPI.Services
 
     public class AccountService : IAccountService
     {
-        private readonly WarehouseManagerDbContext _dbContext;
+        private readonly WarehouseScannersDbContext _dbContext;
         private readonly IPasswordHasher<Account> _passwordHasher;
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly IEmployeeContextService _employeeContextService;
 
-        public AccountService(WarehouseManagerDbContext dbContext, IPasswordHasher<Account> passwordHasher, AuthenticationSettings authenticationSettings, IEmployeeContextService employeeContextService)
+        public AccountService(WarehouseScannersDbContext dbContext, IPasswordHasher<Account> passwordHasher, AuthenticationSettings authenticationSettings, IEmployeeContextService employeeContextService)
         {
             _dbContext = dbContext;
             _passwordHasher = passwordHasher;

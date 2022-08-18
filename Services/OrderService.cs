@@ -21,10 +21,10 @@ namespace WarehouseScannersAPI.Services
 
     public class OrderService : IOrderService
     {
-        private readonly WarehouseManagerDbContext _dbContext;
+        private readonly WarehouseScannersDbContext _dbContext;
         private readonly ILogger<OrderService> _logger;
 
-        public OrderService(WarehouseManagerDbContext dbContext, ILogger<OrderService> logger)
+        public OrderService(WarehouseScannersDbContext dbContext, ILogger<OrderService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;

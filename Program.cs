@@ -29,7 +29,7 @@ builder.Services.AddScoped<DataGenerator>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IEmployeeContextService, EmployeeContextService>();
 
-builder.Services.AddDbContext<WarehouseManagerDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WarehouseDbConnectionString")));
+builder.Services.AddDbContext<WarehouseScannersDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("WarehouseDbConnectionString")));
 
 var authenticationSettings = AuthenticationSettings.NewSettings();
 builder.ConfigureToken(authenticationSettings);

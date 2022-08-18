@@ -19,10 +19,10 @@ namespace WarehouseScannersAPI.Services
 
     public class StorageService : IStorageService
     {
-        private readonly WarehouseManagerDbContext _dbContext;
+        private readonly WarehouseScannersDbContext _dbContext;
         private readonly ILogger<StorageService> _logger;
 
-        public StorageService(WarehouseManagerDbContext dbContext, ILogger<StorageService> logger)
+        public StorageService(WarehouseScannersDbContext dbContext, ILogger<StorageService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;

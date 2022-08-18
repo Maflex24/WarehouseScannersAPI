@@ -12,11 +12,11 @@ namespace WarehouseScannersAPI.Entities
 {
     public class DataGenerator
     {
-        private readonly WarehouseManagerDbContext _dbContext;
+        private readonly WarehouseScannersDbContext _dbContext;
         private readonly IAccountService _accountService;
         private readonly Random random;
 
-        public DataGenerator(WarehouseManagerDbContext dbContext, IAccountService accountService)
+        public DataGenerator(WarehouseScannersDbContext dbContext, IAccountService accountService)
         {
             _dbContext = dbContext;
             _accountService = accountService;

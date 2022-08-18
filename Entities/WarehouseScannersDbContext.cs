@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WarehouseScannersAPI.Entities
 {
-    public class WarehouseManagerDbContext : DbContext
+    public class WarehouseScannersDbContext : DbContext
     {
-        public WarehouseManagerDbContext(DbContextOptions<WarehouseManagerDbContext> options) : base(options)
+        public WarehouseScannersDbContext(DbContextOptions<WarehouseScannersDbContext> options) : base(options)
         {
 
         }
