@@ -1,10 +1,16 @@
 # Warehouse Scanners API
 
 ## What is "Warehouse Scanners API?"
-Warehouse Scanners API goal is to connect warehouse remote scanners with data from server. By API requests employe scanner get data about products, order, products locations (storage), and all what is needed to complete order. API allowes to log in on employee account and authorize requests by account token (claims). <br/> 
+Warehouse Scanners API goal is to connect warehouse remote scanners with data from server. By API requests employe scanner get data about products, orders, products locations (storage), and all what is needed to complete order. API allowes to log in on employee account and authorize requests by account token. <br/> 
 
 It's not entire ERP system. We have no possibility to change more constant data, like storages, products types etc.   
 Entites should have more complex data inside, like shipment address, invoice data etc. In this project is only, what is needed to work with scanners. 
+
+There is seeder with sample data. To use enpoints you need to log-in, and get jwt token. There's 3 accounts
+- picker - avalaible `Order` endpoints, and getting location for product
+- inbound - avalaible `Storage` endpoints, getting empty storage place, and assign pallet to them
+- double - have permission of picker, and inbound account, easier to test application <br/>
+All accounts password is `123456`;
 
 <br/>
 
@@ -86,7 +92,7 @@ Entites should have more complex data inside, like shipment address, invoice dat
     ```
 
 4. Add pallet to order
-    > **ORDER POST** /api/order/pallet
+    > **ORDER POST** api/order/pallet
     ```
     {
         "id": "220814054339-01",
@@ -122,3 +128,15 @@ In current case there is not a storage with enough product qty, that's why from 
 8. Repeat until order will be complete.
 
 **PICK** Endpoint update order positions, storages, and pallets statuses. When you finish last pick, order status will be changed to completed.
+
+<br/>
+
+# Tech stack
+
+- ASP .Net Core 6
+- Microsoft.AspNetCore.Authentication.JwtBearer 6.0.6
+- NLog.Web.AspNetCore" 5.1.
+- Swashbuckle.AspNetCore 6.2.3 
+- Microsoft.EntityFrameworkCore 6.0.5 
+- Microsoft.EntityFrameworkCore.SqlServer 6.0.5
+- Microsoft.EntityFrameworkCore.Tools 6.0.5
