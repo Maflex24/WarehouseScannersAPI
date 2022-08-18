@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WarehouseManagerAPI.Exceptions;
+using WarehouseScannersAPI.Exceptions;
 
-namespace WarehouseManagerAPI.Middleware
+namespace WarehouseScannersAPI.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {

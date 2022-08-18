@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WarehouseManagerAPI": {
+    "WarehouseScannersAPI": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

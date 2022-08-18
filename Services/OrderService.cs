@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WarehouseManagerAPI.Dtos;
-using WarehouseManagerAPI.Entities;
-using WarehouseManagerAPI.Exceptions;
+using WarehouseScannersAPI.Dtos;
+using WarehouseScannersAPI.Entities;
+using WarehouseScannersAPI.Exceptions;
 using WarehouseScannersAPI.Dtos;
 
-namespace WarehouseManagerAPI.Services
+namespace WarehouseScannersAPI.Services
 {
     public interface IOrderService
     {

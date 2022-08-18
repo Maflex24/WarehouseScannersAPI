@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WarehouseManagerAPI.Entities
+namespace WarehouseScannersAPI.Entities
 {
     public class StorageContent
     {

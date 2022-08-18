@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WarehouseManagerAPI.Dtos;
-using WarehouseManagerAPI.Entities;
-using WarehouseManagerAPI.Services;
+using WarehouseScannersAPI.Dtos;
+using WarehouseScannersAPI.Entities;
+using WarehouseScannersAPI.Services;
 
-namespace WarehouseManagerAPI.Controlles
+namespace WarehouseScannersAPI.Controlles
 {
     [Route("api/account")]
     [Authorize]

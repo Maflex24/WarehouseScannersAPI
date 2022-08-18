@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WarehouseScannersAPI.Dtos;
 
-namespace WarehouseManagerAPI.Dtos
+namespace WarehouseScannersAPI.Dtos
 {
     public class OrderProductsList
     {

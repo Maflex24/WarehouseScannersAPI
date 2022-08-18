@@ -4,11 +4,11 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using WarehouseManagerAPI.Dtos;
-using WarehouseManagerAPI.Entities;
-using WarehouseManagerAPI.Exceptions;
+using WarehouseScannersAPI.Dtos;
+using WarehouseScannersAPI.Entities;
+using WarehouseScannersAPI.Exceptions;
 
-namespace WarehouseManagerAPI.Services
+namespace WarehouseScannersAPI.Services
 {
     public interface IAccountService
     {

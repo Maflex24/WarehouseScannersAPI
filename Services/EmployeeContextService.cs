@@ -5,9 +5,9 @@ using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using WarehouseManagerAPI.Entities;
+using WarehouseScannersAPI.Entities;
 
-namespace WarehouseManagerAPI.Services
+namespace WarehouseScannersAPI.Services
 {
     public interface IEmployeeContextService
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 
-namespace WarehouseManagerAPI.Authentication
+namespace WarehouseScannersAPI.Authentication
 {
     public static class ConfigureJwtToken
     {

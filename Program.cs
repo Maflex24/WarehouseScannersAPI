@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using NLog.Web;
-using WarehouseManagerAPI;
-using WarehouseManagerAPI.Authentication;
-using WarehouseManagerAPI.Entities;
-using WarehouseManagerAPI.Middleware;
-using WarehouseManagerAPI.Services;
+using WarehouseScannersAPI;
+using WarehouseScannersAPI.Authentication;
+using WarehouseScannersAPI.Entities;
 using WarehouseScannersAPI.Middleware;
+using WarehouseScannersAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
-namespace WarehouseManagerAPI
+namespace WarehouseScannersAPI
 {
     public class AuthenticationSettings
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WarehouseManagerAPI.Dtos
+namespace WarehouseScannersAPI.Dtos
 {
     public class LocationAndQtyDto
     {

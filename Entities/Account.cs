@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace WarehouseManagerAPI.Entities
+namespace WarehouseScannersAPI.Entities
 {
     public class Account
     {

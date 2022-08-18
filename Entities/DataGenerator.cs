@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using WarehouseManagerAPI.Dtos;
-using WarehouseManagerAPI.Services;
+using WarehouseScannersAPI.Dtos;
+using WarehouseScannersAPI.Services;
 
-namespace WarehouseManagerAPI.Entities
+namespace WarehouseScannersAPI.Entities
 {
     public class DataGenerator
     {
