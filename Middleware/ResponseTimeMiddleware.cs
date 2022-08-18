@@ -20,7 +20,7 @@ namespace WarehouseScannersAPI.Middleware
             var elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
 
             var message =
-                $"Request [{context.Request.Method}] {context.Request.Path} {context.Request.PathBase} took {elapsedMilliseconds} ms";
+                $"Request [{context.Request.Method}] {context.Request.Path}{context.Request.QueryString} took {elapsedMilliseconds} ms";
 
             if (elapsedMilliseconds > 1000)
                 _logger.LogWarning(message);
