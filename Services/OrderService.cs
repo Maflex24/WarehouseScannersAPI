@@ -28,6 +28,7 @@ namespace WarehouseScannersAPI.Services
         {
             var query = _dbContext
                 .Orders
+                .AsNoTracking()
                 .Where(o => o.Status == "Released" && o.OrderPositions.Any());
 
             if (ordersQuery.Created != null)
@@ -50,6 +51,7 @@ namespace WarehouseScannersAPI.Services
 
             var products = await _dbContext
                 .Products
+                .AsNoTracking()
                 .Select(p => new {Id = p.Id, Volume = p.Volume, Weight = p.Weight})
                 .ToListAsync();
 
@@ -96,12 +98,14 @@ namespace WarehouseScannersAPI.Services
 
             var orderPositions = await _dbContext
                 .OrderPositions
+                .AsNoTracking()
                 .Where(op => op.OrderId == orderId && !op.Completed)
                 .Include(op => op.Product)
                 .ToListAsync();
 
             var palletsInOrder = await _dbContext
                 .Pallets
+                .AsNoTracking()
                 .Where(p => p.OrderId == orderId)
                 .Select(p => new PalletInOrderDto()
                 {

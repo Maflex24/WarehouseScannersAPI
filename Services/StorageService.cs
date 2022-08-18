@@ -27,6 +27,7 @@ namespace WarehouseScannersAPI.Services
         {
             var pallet = await _dbContext
                 .Pallets
+                .AsNoTracking()
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
             if (pallet == null)
@@ -34,6 +35,7 @@ namespace WarehouseScannersAPI.Services
 
             var storage = await _dbContext
                 .Storages
+                .AsNoTracking()
                 .Where(s => !s.StorageContent.Any() && !s.Temporary)
                 .OrderBy(s => s.Height)
                 .Where(s => 
@@ -90,6 +92,7 @@ namespace WarehouseScannersAPI.Services
         {
             var storageContent = await _dbContext
                 .StorageContents
+                .AsNoTracking()
                 .Where(sc =>
                     sc.ProductId == productId &&
                     sc.Qty >= qty)
@@ -105,6 +108,7 @@ namespace WarehouseScannersAPI.Services
 
             storageContent = await _dbContext
                 .StorageContents
+                .AsNoTracking()
                 .Where(sc => sc.ProductId == productId)
                 .OrderByDescending(sc => sc.Qty)
                 .FirstOrDefaultAsync();
