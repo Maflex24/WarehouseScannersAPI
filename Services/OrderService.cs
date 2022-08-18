@@ -141,25 +141,9 @@ namespace WarehouseScannersAPI.Services
 
         public async Task PickItem(PickDto pickDto)
         {
-            var storage = await _dbContext
-                .Storages
-                .Include(s => s.StorageContent)
-                .SingleOrDefaultAsync(s => s.Id == pickDto.StorageId);
-
-            if (storage == null) throw new BadRequestException($"Storage {pickDto.ProductId} does not exist");
-
-            var pallet = await _dbContext
-                .Pallets
-                .Include(p => p.PalletContent)
-                .SingleOrDefaultAsync(p => p.Id == pickDto.PalletId);
-
-            if (pallet == null) throw new BadRequestException($"Pallet {pickDto.PalletId} does not exist");
-
-            var product = await _dbContext
-                .Products
-                .SingleOrDefaultAsync(p => p.Id == pickDto.ProductId);
-
-            if (product == null) throw new BadRequestException($"Product {pickDto.ProductId} does not exist");
+            var storage = await GetStorageWithContent(pickDto.StorageId);
+            var pallet = await GetPalletWithContent(pickDto.PalletId);
+            var product = await GetProduct(pickDto.ProductId);
 
             var storageProductAvailableQty = storage.StorageContent
                 .Where(sc => sc.ProductId == product.Id)
@@ -171,13 +155,14 @@ namespace WarehouseScannersAPI.Services
 
             var orderPosition = await _dbContext
                 .OrderPositions
-                .FirstOrDefaultAsync(op => op.OrderId == pallet.OrderId && op.ProductId == pickDto.ProductId);
+                .Include(op => op.Order)
+                .SingleOrDefaultAsync(op => op.OrderId == pallet.OrderId && op.ProductId == pickDto.ProductId);
 
             if (orderPosition is null)
                 throw new BadRequestException($"Product {product.Id} is not ordered in current order!");
 
             if (orderPosition.Qty - orderPosition.PickedQty < pickDto.Qty)
-                throw new BadRequestException("You try to pick more items than is in the order");
+                throw new BadRequestException($"You try to pick more items than is in the order. To pick left: [{orderPosition.Qty - orderPosition.PickedQty}]. Tried to pick: [{pickDto.Qty}]");
 
             pallet.PalletContent.Add(new PalletContent()
             {
@@ -189,10 +174,7 @@ namespace WarehouseScannersAPI.Services
             if (orderPosition.PickedQty == orderPosition.Qty)
                 orderPosition.Completed = true;
 
-            var order = await _dbContext
-                .Orders
-                .Include(o => o.OrderPositions)
-                .SingleOrDefaultAsync(o => o.Id == pallet.OrderId);
+            var order = orderPosition.Order;
 
             if (order.OrderPositions.All(op => op.Completed))
                 order.Status = "Completed";
@@ -210,6 +192,41 @@ namespace WarehouseScannersAPI.Services
             await _dbContext.SaveChangesAsync();
 
             _logger.LogInformation($"PICKING | Picked [{pickDto.Qty}] of [{pickDto.ProductId}] from [{pickDto.StorageId}] to pallet [{pickDto.PalletId}] and order [{pallet.OrderId}]");
+        }
+
+        private async Task<Storage> GetStorageWithContent(string storageId)
+        {
+            var storage = await _dbContext
+                .Storages
+                .Include(s => s.StorageContent)
+                .SingleOrDefaultAsync(s => s.Id == storageId);
+
+            if (storage == null) throw new BadRequestException($"Storage {storageId} does not exist");
+
+            return storage;
+        }
+
+        private async Task<Pallet> GetPalletWithContent(string palletId)
+        {
+            var pallet = await _dbContext
+                .Pallets
+                .Include(p => p.PalletContent)
+                .SingleOrDefaultAsync(p => p.Id == palletId);
+
+            if (pallet == null) throw new BadRequestException($"Pallet {palletId} does not exist");
+
+            return pallet;
+        }
+
+        private async Task<Product> GetProduct(string productId)
+        {
+            var product = await _dbContext
+                .Products
+                .SingleOrDefaultAsync(p => p.Id == productId);
+
+            if (product == null) throw new BadRequestException($"Product {productId} does not exist");
+
+            return product;
         }
 
         public async Task<Pallet> AddPallet(NewPalletDto newPallet)
