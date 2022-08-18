@@ -9,7 +9,7 @@ namespace WarehouseScannersAPI.Services
     {
         public Task<string> GetEmptyStorage(string palletId);
         public Task AssignPalletToStorage(string palletId, string storageId);
-        public Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty);
+        public Task<LocationAndQtyDto> GetProductLocation(string productId, int qty);
     }
 
     public class StorageService : IStorageService
@@ -34,7 +34,6 @@ namespace WarehouseScannersAPI.Services
 
             var storage = await _dbContext
                 .Storages
-                .Include(s => s.StorageContent)
                 .Where(s => !s.StorageContent.Any() && !s.Temporary)
                 .OrderBy(s => s.Height)
                 .Where(s => 
@@ -44,7 +43,10 @@ namespace WarehouseScannersAPI.Services
                     s.Width >= pallet.Width)
                 .FirstOrDefaultAsync();
 
-            return storage == null ? null : storage.Id;
+            if (storage == null)
+                throw new Exception("There is no more valid empty storage space");
+
+            return storage.Id;
         }
 
         public async Task AssignPalletToStorage(string palletId, string storageId)
@@ -84,13 +86,13 @@ namespace WarehouseScannersAPI.Services
             _logger.LogInformation($"INBOUND | Pallet [{palletId}] assigned to [{storageId}]");
         }
 
-        public async Task<LocationAndQtyDto> GetProductLocation(string productId, int Qty)
+        public async Task<LocationAndQtyDto> GetProductLocation(string productId, int qty)
         {
             var storageContent = await _dbContext
                 .StorageContents
                 .Where(sc =>
                     sc.ProductId == productId &&
-                    sc.Qty >= Qty)
+                    sc.Qty >= qty)
                 .OrderBy(sc => sc.Qty)
                 .FirstOrDefaultAsync();
 
@@ -98,7 +100,7 @@ namespace WarehouseScannersAPI.Services
                 return new LocationAndQtyDto()
                 {
                     StorageId = storageContent.StorageId,
-                    Qty = Qty
+                    Qty = qty
                 };
 
             storageContent = await _dbContext
