@@ -30,7 +30,7 @@ namespace WarehouseScannersAPI.Services
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
             if (pallet == null)
-                throw new BadRequestException("Pallet doesn't exist");
+                throw new BadRequestException($"Pallet [{palletId}] doesn't exist");
 
             var storage = await _dbContext
                 .Storages
@@ -55,10 +55,10 @@ namespace WarehouseScannersAPI.Services
                 .SingleOrDefaultAsync(s => s.Id == storageId);
 
             if (storage == null)
-                throw new BadRequestException("Storage doesn't exist");
+                throw new BadRequestException($"Storage [{storageId}] doesn't exist");
 
             if (storage.StorageContent.Any())
-                throw new BadRequestException("Storage isn't empty");
+                throw new BadRequestException($"Storage [{storageId}] isn't empty");
 
             var pallet = await _dbContext
                 .Pallets
@@ -66,7 +66,7 @@ namespace WarehouseScannersAPI.Services
                 .SingleOrDefaultAsync(p => p.Id == palletId);
 
             if (pallet == null)
-                throw new BadRequestException("Pallet doesn't exist");
+                throw new BadRequestException($"Pallet [{palletId}] doesn't exist");
 
             foreach (var palletContent in pallet.PalletContent)
             {
@@ -108,7 +108,7 @@ namespace WarehouseScannersAPI.Services
                 .FirstOrDefaultAsync();
 
             if (storageContent == null)
-                throw new Exception("There is no more product on storage");
+                throw new Exception($"There is no more product [{productId}] on storage");
 
             return new LocationAndQtyDto()
             {
