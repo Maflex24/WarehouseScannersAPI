@@ -10,15 +10,14 @@ Entites should have more complex data inside, like shipment address, invoice dat
 
 # Features
 
-- Account authorization, you need to log in
-- Get list of existed orders with information about total products ordered, total products weight, and volume. You can get orders from specific day only
+- Account authorization, you need to log in, to do other requests
+- Get list of existed orders with information about total products ordered, total products weight, and volume. You can get orders from specific day only, if you need
 - Get order details, the same what above, and ordered products list, with qty, how many left to pick, and info about pallets assigned to this order
 - Create new pallet, assigned to the specific order
-- Find storage location for product. If there is no location with requested quantity, you will receive storage location with max quantity on warehouse
+- Find storage location for product. If there is no location with requested quantity, you will receive storage location with max quantity avalaible
 - Assign (pick) product to order. You will assign product from specific storage and quantity to pallet, which is assigned to order
 - Find empty storage place for existed pallet, based on pallet and storage dimensions and weight
-- Assign pallet to empty storage
-
+- Assign pallet to empty storage place
 
 
 # How to run
@@ -26,16 +25,24 @@ Entites should have more complex data inside, like shipment address, invoice dat
 Clone project
 
 ```git
- git clone https://github.com/Maflex24/WarehouseScannersAPI.git
+git clone https://github.com/Maflex24/WarehouseScannersAPI.git
 ```
 
 At `appsettings.json` file change database connection strings for valid to your environment
 
 ```json
-  "ConnectionStrings": {
-    "WarehouseDbConnectionString": "Server=(LocalDb)\\LocalDbServer;Database=WarehouseScannersDb;Trusted_Connection=True;"
-  },
+"ConnectionStrings": {
+  "WarehouseDbConnectionString": "Server=(LocalDb)\\LocalDbServer;Database=WarehouseScannersDb;Trusted_Connection=True;"
+},
 ```
+
+In nuget package manager console type:
+
+```bash
+update-database
+```
+
+Then Entity Framework will create database structure for you 
 
 Run project
 
@@ -43,7 +50,9 @@ Run project
 dotnet run
 ```
 
-Better if you run project at developer environment, by using `Visual Studio` for example. Then you get swagger documention on browser, and will be easier to testing.
+Better if you run project at developer environment, by using `Visual Studio` for example. Then you get swagger documention on browser, and will be easier to testing.  
+
+Program has build-in data seeder, when your database is configured corretly, seeder should fill sample data.
 
 
 # Example process flow
@@ -51,7 +60,7 @@ Better if you run project at developer environment, by using `Visual Studio` for
 First you need to log-in, to authorize all request by received jwt token
 
 ```http
- POST /api/account/login
+POST /api/account/login
 ```
 
 With credentials
@@ -65,7 +74,8 @@ With credentials
 By default there are three accounts
 - `picker` -  has access to picking actions only
 - `inbound` - has access to inbound actions only
-- `double` - has access to all actions, easiest for testing
+- `double` - has access to all actions, easiest for testing.  
+
 All builed accounts has password `123456`  
 
 
@@ -73,19 +83,19 @@ All builed accounts has password `123456`
 Get empty location for specific pallet
 
 ```http
- GET /api/storage/empty/palletId=Euro80100
+GET /api/storage/empty/palletId=Euro80100
 ```
 
-You will get empty storage location, valid for pallet size and weight
+You will get empty storage location id, valid for pallet size and weight
 
 ```text
  A1-01-B01
 ```
 
-Take pallet to specific storage
+Take pallet to specific storage, and assign pallet to this storage
 
 ```http
- POST /api/storage/pallet?palletId=Euro80100&storageId=A1-01-B01
+POST /api/storage/pallet?palletId=Euro80100&storageId=A1-01-B01
 ```
 
 Pallet content is moved to storage content. Pallet is removed from database
@@ -133,7 +143,7 @@ You receive orders data:
 Choose one order from list
 
 ```http
- GET api/order/220818-030317-03
+GET /api/order/220818-030317-03
 ```
 
 You receive order data
@@ -157,7 +167,7 @@ You receive order data
 Add pallet to order
 
 ```http
- POST api/order/pallet
+POST /api/order/pallet
 ```
 
 With body:
@@ -174,7 +184,7 @@ With body:
 Choose product to pick, and find storage location
 
 ```http
- GET api/storage/product?productId=10ActiveSpeaker&Qty=15
+GET /api/storage/product?productId=10ActiveSpeaker&Qty=15
 ```
 
 You will get storage id (location), and avalaible quantity as response
@@ -186,13 +196,13 @@ You will get storage id (location), and avalaible quantity as response
 }
 ```
 
-If there will be not location storage with your requested qty, you will get location with max avalaible storage qty. Then you need yo pick from this location and do request again, to find new storage.  
+If there will be not location storage with your requested qty, you will get location with max avalaible storage qty. Then you need to pick from this location and do request again, to find new storage.  
 
 
 Pick items
 
 ```http
- POST api/order/pick
+POST /api/order/pick
 ```
 
 Example body:
@@ -209,7 +219,7 @@ Example body:
 When you do again request
 
 ```http
- GET api/order/220818-030317-03
+GET /api/order/220818-030317-03
 ```
 
 Order data will be updated
@@ -229,7 +239,7 @@ Order data will be updated
 }
 ```
 
-At current case order is finished. If it's not, you repeat process, untils it's done.    
+At current case order is finished. If it's not, you need to repeat process, untils it's done.    
 # API Reference
 
 ## Account 
@@ -237,7 +247,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Log-in
 
 ```http
- POST /api/account/login
+POST /api/account/login
 ```
 
 | Source | Parameter | Type |
@@ -248,7 +258,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Change password
 
 ```http
- POST /api/account/password
+POST /api/account/password
 ```
 
 | Source | Parameter | Type |
@@ -263,7 +273,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Get empty storage
 
 ```http
- GET api/storage/empty
+GET /api/storage/empty
 ```
 
 | Source | Parameter | Type |
@@ -273,7 +283,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Assgin pallet to storage
 
 ```http
- POST api/storage/pallet
+POST /api/storage/pallet
 ```
 
 | Source | Parameter | Type |
@@ -284,7 +294,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Get product location
 
 ```http
- GET api/storage/product
+GET /api/storage/product
 ```
 
 | Source | Parameter | Type |
@@ -297,7 +307,7 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Get non completed orders
 
 ```http
- GET api/order
+GET /api/order
 ```
 
 | Source | Parameter | Type |
@@ -309,15 +319,12 @@ At current case order is finished. If it's not, you repeat process, untils it's 
 ### Get order details
 
 ```http
- GET api/order/{orderId}
+GET /api/order/{orderId}
 ```
 
 | Source | Parameter | Type |
 | :----- | :-------  | :------- | 
 | `path` | `orderId` | `string` | 
-
-
-
 
 
 ## Tech Stack
